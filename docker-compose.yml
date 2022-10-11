@@ -60,7 +60,7 @@ services:
     build:
       context: ./nginx
     ports:
-      - 31080:80  #50081:80 ?
+      - 31080:80  #50081:80
     depends_on:
       - postgres
       - apollo
