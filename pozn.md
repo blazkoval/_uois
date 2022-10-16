@@ -27,8 +27,24 @@ strukturalizovat projekt do vice soubru: DBDef, DBFeed., GraphResolver - zkopír
 v mainu se vytvari aplikace - řádek 73
 
 pg admin:
-    host name postgre všude
+    hostname, postgres všude
 
 
 Projetkotvy den
 kde je adresar, ukazat commit
+
+Struktura graphql slozena z vice vsrtev
+    databaze nad tim graphql + vsrtva apollo - prekryva endpointy, "lezi nad vsemi"
+
+Scaling = škálovatelnost - 
+
+uživatelské prostředí:
+    localhost:port/gql
+
+mutace = schopnost menit data v databazi
+    create
+    update (write)
+    delete - zneplatneni
+mutace relaci - ??
+
+apl.unob.cz/rozvrh/api/read/rozvrh?id=4 
