@@ -68,7 +68,7 @@ class GroupModel(BaseModel):
     startDate = Column(DateTime)
     endDate = Column(DateTime)
     valid = Column(Boolean, default=True)
-
+### CO?
     externalId = Column(String, index=True)
 
     grouptype_id = Column(ForeignKey('grouptypes.id'))
