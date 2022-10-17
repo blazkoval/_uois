@@ -51,7 +51,7 @@ class Query:
     def event_by_id(self, id: str) -> 'EventGQLModel':
         return randomEvent(id)
 
-
+    ### user_by_id
 
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter

@@ -47,4 +47,4 @@ mutace = schopnost menit data v databazi
     delete - zneplatneni
 mutace relaci - ??
 
-apl.unob.cz/rozvrh/api/read/rozvrh?id=4 
+nakopírovat si modely v gql_events > main.py
