@@ -5,7 +5,7 @@ import typing
 import strawberry as strawberryB
 
 def randomEvent(id = 1):
-    return {'id': id, 'name': f'Event({id})'}
+    return {'id': id, 'name': f'Event({id})', 'users':[{'id':1}]}
 
 def randomUser(id = 1):
     return {'id': id, 'name': 'John', 'surname': 'Leon', 'groups': [{'id': 1}]}
@@ -13,7 +13,7 @@ def randomUser(id = 1):
 def resolveDictField(self, info: strawberryB.types.Info) -> str:
     return self[info.field_name]
 
-@strawberryB.federation.type(extend=True, keys=["id"])
+@strawberryB.federation.type(extend=True, keys=["id"]) #neni hlavni
 class UserGQLModel:
 
     id: strawberryB.ID = strawberryB.federation.field(external=True)
@@ -28,7 +28,7 @@ class UserGQLModel:
         # or even from an API
         return UserGQLModel(id=id)
 
-@strawberryB.federation.type(keys=["id"])
+@strawberryB.federation.type(keys=["id"]) 
 class EventGQLModel:
 
     @strawberryB.field
