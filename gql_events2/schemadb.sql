@@ -5,9 +5,8 @@ CREATE TABLE "Event" (
   "end" datetime,
   "capacity" int,
   "eventtype_id" UUID,
-  "subject_id" UUID,
-  "lesson_id" UUID,
   "location_id" UUID,
+  "lessons" list,
   "groups" list,
   "participants" list,
   "organizers" list,
@@ -20,11 +19,6 @@ CREATE TABLE "EventType" (
 );
 
 CREATE TABLE "Location" (
-  "id" UUID,
-  "name" string
-);
-
-CREATE TABLE "Role" (
   "id" UUID,
   "name" string
 );
@@ -46,7 +40,8 @@ CREATE TABLE "Subject" (
 
 CREATE TABLE "Lesson" (
   "id" UUID,
-  "name" string
+  "name" string,
+  "subject_id" UUID
 );
 
 CREATE TABLE "Event_Participant" (
@@ -66,9 +61,9 @@ CREATE TABLE "Event_Group" (
 
 ALTER TABLE "Event" ADD FOREIGN KEY ("eventtype_id") REFERENCES "EventType" ("id");
 
-ALTER TABLE "Event" ADD FOREIGN KEY ("subject_id") REFERENCES "Subject" ("id");
+ALTER TABLE "Lesson" ADD FOREIGN KEY ("subject_id") REFERENCES "Subject" ("id");
 
-ALTER TABLE "Event" ADD FOREIGN KEY ("lesson_id") REFERENCES "Lesson" ("id");
+ALTER TABLE "Lesson" ADD FOREIGN KEY ("id") REFERENCES "Event" ("lessons");
 
 ALTER TABLE "Event" ADD FOREIGN KEY ("location_id") REFERENCES "Location" ("id");
 
