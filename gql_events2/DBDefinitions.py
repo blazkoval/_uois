@@ -28,7 +28,10 @@ class EventModel(BaseModel):
     comment = Column(String)
 
 class EventType(BaseModel):
-    pass    
+    __tablename__ = 'EventType'
+
+    id = UUIDColumn()
+    name = Column(String)
 
 
 
