@@ -92,6 +92,7 @@ class GroupTypeModel(BaseModel):
 
     groups = relationship('GroupModel', back_populates='grouptype')
 
+
 class RoleTypeModel(BaseModel):
     """Urcuje typ role (Vedouci katedry, dekan apod.)
     """
@@ -102,6 +103,7 @@ class RoleTypeModel(BaseModel):
 
     roles = relationship('RoleModel', back_populates='roletype')
 
+#roletype + group + user dana skupina dane role plni tento uzivatel
 class RoleModel(BaseModel):
     """Spojuje uzivatele a skupinu, ve ktere uzivatel "hraje" roli 
     """

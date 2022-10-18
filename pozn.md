@@ -48,3 +48,5 @@ mutace = schopnost menit data v databazi
 mutace relaci - ??
 
 nakopírovat si modely v gql_events > main.py
+
+smazat subject, prohodit vztah lesson */1 event
