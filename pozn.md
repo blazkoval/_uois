@@ -50,3 +50,15 @@ mutace relaci - ??
 nakopírovat si modely v gql_events > main.py
 
 smazat subject, prohodit vztah lesson */1 event
+
+# Projektak
+17 kontejneru
+
+spoluprace s richterem
+    musime se shodnout na nazvech EventGQL
+
+# Alfa verze
+Struktury databaze, modely, cteni z databaze (ne generovani nahodnych dat) 20 %
+
+# 20.10.
+gql_empty
