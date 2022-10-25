@@ -1,3 +1,4 @@
+from email.policy import default
 import sqlalchemy
 import datetime
 
@@ -23,6 +24,24 @@ def UUIDColumn(name=None):
 # je-li treba, muzete definovat modely obsahujici jen id polozku, na ktere se budete odkazovat
 #
 ###########################################################################################################################
+class EventModel(BaseModel):
+
+    __tablename__ = 'Event'
+
+    id = UUIDColumn()
+    name = Column(String)
+    start = Column(DateTime)
+    end = Column(DateTime)
+    capacity = Column(Integer)
+    comment = Column(String)
+
+class EventType(BaseModel):
+    __tablename__ = 'EventType'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
