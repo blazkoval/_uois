@@ -40,6 +40,20 @@ services:
     depends_on:
       - postgres
 
+  gql_project3:
+    image: gql_project3
+    build:
+      context: ./gql_project3
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_DB=data
+    depends_on:
+      - postgres
+      - gql_ug
+    ports:
+      - 31128:8000  
+
   postgres:
     image: postgres
     environment:
