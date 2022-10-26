@@ -62,3 +62,8 @@ Struktury databaze, modely, cteni z databaze (ne generovani nahodnych dat) 20 %
 
 # 20.10.
 gql_empty
+
+# 26.10.
+Proč nám nejde v pg adminu po compose up naše modely: Event, EventType
+Jak zprovoznit jupyter? - Event, EventType - už se zobrazují, ale neaktualizují se
+Nečitelné https://github.com/hrbolek/learning/blob/master/notebooks/inf/05B_sqlalchemy.ipynb
