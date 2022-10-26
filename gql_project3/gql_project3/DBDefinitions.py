@@ -48,7 +48,7 @@ class EventType(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    EventModel = relationship('EventModel', back_populates='EventType')
+    Event = relationship('EventModel', back_populates='EventType')
 
 class Location(BaseModel):
     __tablename__ = 'Location'
@@ -56,7 +56,7 @@ class Location(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    EventModel = relationship('EventModel', back_populates='Location')
+    Event = relationship('EventModel', back_populates='Location')
 
 class Lesson(BaseModel):
     __tablename__ = 'Lesson'
@@ -65,7 +65,7 @@ class Lesson(BaseModel):
     name = Column(String)
     subject_id = UUIDColumn()
 
-    EventModel = relationship('EventModel', back_populates='Lesson')
+    Event = relationship('EventModel', back_populates='Lesson')
     Subject = relationship('Subject', back_populates='Lesson')
 
 class Subject(BaseModel):
@@ -74,7 +74,7 @@ class Subject(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    EventModel = relationship('EventModel', back_populates='Subject')
+    Event = relationship('EventModel', back_populates='Subject')
     Lesson = relationship('Lesson', back_populates='Subject')
 
 class Group(BaseModel):
@@ -83,7 +83,7 @@ class Group(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    EventModel = relationship('EventModel', back_populates='Group')
+    Event = relationship('EventModel', back_populates='Group')
 
 class User(BaseModel):
     __tablename__ = 'User'
@@ -91,7 +91,7 @@ class User(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    EventModel = relationship('EventModel', back_populates='User')
+    Event = relationship('EventModel', back_populates='User')
 
 
 
