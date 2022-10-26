@@ -83,7 +83,7 @@ class Group(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    Event = relationship('EventModel', back_populates='Group')
+    #Event = relationship('EventModel', back_populates='Group')
 
 class User(BaseModel):
     __tablename__ = 'User'
@@ -91,7 +91,7 @@ class User(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    Event = relationship('EventModel', back_populates='User')
+    #Event = relationship('EventModel', back_populates='User')
 
 
 
