@@ -35,11 +35,64 @@ class EventModel(BaseModel):
     capacity = Column(Integer)
     comment = Column(String)
 
+    EventType = relationship('EventType', back_populates='Event')
+    Location = relationship('Location', back_populates='Event')
+    Lesson = relationship('Lesson', back_populates='Event')
+    Subject = relationship('Subject', back_populates='Event')
+    #Group = relationship('Group', back_populates='Event')
+    #User = relationship('User', back_populates='Event')
+
 class EventType(BaseModel):
     __tablename__ = 'EventType'
 
     id = UUIDColumn()
     name = Column(String)
+
+    EventModel = relationship('EventModel', back_populates='EventType')
+
+class Location(BaseModel):
+    __tablename__ = 'Location'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+    EventModel = relationship('EventModel', back_populates='Location')
+
+class Lesson(BaseModel):
+    __tablename__ = 'Lesson'
+
+    id = UUIDColumn()
+    name = Column(String)
+    subject_id = UUIDColumn()
+
+    EventModel = relationship('EventModel', back_populates='Lesson')
+    Subject = relationship('Subject', back_populates='Lesson')
+
+class Subject(BaseModel):
+    __tablename__ = 'Subject'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+    EventModel = relationship('EventModel', back_populates='Subject')
+    Lesson = relationship('Lesson', back_populates='Subject')
+
+class Group(BaseModel):
+    __tablename__ = 'Group'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+    EventModel = relationship('EventModel', back_populates='Group')
+
+class User(BaseModel):
+    __tablename__ = 'User'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+    EventModel = relationship('EventModel', back_populates='User')
+
 
 
 
