@@ -35,6 +35,10 @@ class EventModel(BaseModel):
     capacity = Column(Integer)
     comment = Column(String)
 
+    eventtype_id = Column(ForeignKey('eventtype.id'))
+    location_id = Column(ForeignKey('location.id'))
+    
+
     eventtype = relationship('EventTypeModel', back_populates='event')
     locations = relationship('LocationModel', back_populates='event')
     lesson = relationship('LessonModel', back_populates='event')
@@ -48,7 +52,7 @@ class EventTypeModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    event = relationship('EventModel', back_populates='eventtype')
+    events = relationship('EventModel', back_populates='eventtype')
 
 class LocationModel(BaseModel):
     __tablename__ = 'location'
@@ -56,16 +60,17 @@ class LocationModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    event = relationship('EventModel', back_populates='location')
+    events = relationship('EventModel', back_populates='location')
 
 class LessonModel(BaseModel):
     __tablename__ = 'lessons'
 
     id = UUIDColumn()
     name = Column(String)
-    subject_id = UUIDColumn()
 
-    event = relationship('EventModel', back_populates='lessons')
+    subject_id = Column(ForeignKey('subject.id'))
+
+    events = relationship('EventModel', back_populates='lessons')
     subjects = relationship('SubjectModel', back_populates='lessons')
 
 class SubjectModel(BaseModel):
@@ -74,7 +79,7 @@ class SubjectModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    event = relationship('EventModel', back_populates='Subject')
+    events = relationship('EventModel', back_populates='Subject')
     lesson = relationship('LessonModel', back_populates='subjects') ##########################################
 
 class GroupModel(BaseModel):
@@ -83,7 +88,7 @@ class GroupModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    #event = relationship('EventModel', back_populates='group')
+    #events = relationship('EventModel', back_populates='group')
 
 class UserModel(BaseModel):
     __tablename__ = 'user'
@@ -91,7 +96,7 @@ class UserModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    #event = relationship('EventModel', back_populates='user')
+    #events = relationship('EventModel', back_populates='user')
 
 
 
