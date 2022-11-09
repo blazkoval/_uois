@@ -1,5 +1,5 @@
 # Projekt
-čet. Lenka Blažková, des. Filip Zindler
+čet. Lenka Blažková, čet. Filip Zindler
 ## Zadání
 3. Vytvořte datové struktury pro definici:
 - události

@@ -26,7 +26,7 @@ def UUIDColumn(name=None):
 ###########################################################################################################################
 class EventModel(BaseModel):
 
-    __tablename__ = 'Event'
+    __tablename__ = 'event'
 
     id = UUIDColumn()
     name = Column(String)
@@ -35,63 +35,63 @@ class EventModel(BaseModel):
     capacity = Column(Integer)
     comment = Column(String)
 
-    EventType = relationship('EventType', back_populates='Event')
-    Location = relationship('Location', back_populates='Event')
-    Lesson = relationship('Lesson', back_populates='Event')
-    Subject = relationship('Subject', back_populates='Event')
-    #Group = relationship('Group', back_populates='Event')
-    #User = relationship('User', back_populates='Event')
+    eventtype = relationship('EventTypeModel', back_populates='event')
+    locations = relationship('LocationModel', back_populates='event')
+    lesson = relationship('LessonModel', back_populates='event')
+    subject = relationship('SubjectModel', back_populates='event')
+    #group = relationship('GroupModel', back_populates='event')
+    #user = relationship('UserModel', back_populates='event')
 
-class EventType(BaseModel):
-    __tablename__ = 'EventType'
-
-    id = UUIDColumn()
-    name = Column(String)
-
-    Event = relationship('EventModel', back_populates='EventType')
-
-class Location(BaseModel):
-    __tablename__ = 'Location'
+class EventTypeModel(BaseModel):
+    __tablename__ = 'eventtype'
 
     id = UUIDColumn()
     name = Column(String)
 
-    Event = relationship('EventModel', back_populates='Location')
+    event = relationship('EventModel', back_populates='eventtype')
 
-class Lesson(BaseModel):
-    __tablename__ = 'Lesson'
+class LocationModel(BaseModel):
+    __tablename__ = 'location'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+    event = relationship('EventModel', back_populates='location')
+
+class LessonModel(BaseModel):
+    __tablename__ = 'lessons'
 
     id = UUIDColumn()
     name = Column(String)
     subject_id = UUIDColumn()
 
-    Event = relationship('EventModel', back_populates='Lesson')
-    Subject = relationship('Subject', back_populates='Lesson')
+    event = relationship('EventModel', back_populates='lessons')
+    subjects = relationship('SubjectModel', back_populates='lessons')
 
-class Subject(BaseModel):
-    __tablename__ = 'Subject'
-
-    id = UUIDColumn()
-    name = Column(String)
-
-    Event = relationship('EventModel', back_populates='Subject')
-    Lesson = relationship('Lesson', back_populates='Subject')
-
-class Group(BaseModel):
-    __tablename__ = 'Group'
+class SubjectModel(BaseModel):
+    __tablename__ = 'subject'
 
     id = UUIDColumn()
     name = Column(String)
 
-    #Event = relationship('EventModel', back_populates='Group')
+    event = relationship('EventModel', back_populates='Subject')
+    lesson = relationship('LessonModel', back_populates='subjects') ##########################################
 
-class User(BaseModel):
-    __tablename__ = 'User'
+class GroupModel(BaseModel):
+    __tablename__ = 'group'
 
     id = UUIDColumn()
     name = Column(String)
 
-    #Event = relationship('EventModel', back_populates='User')
+    #event = relationship('EventModel', back_populates='group')
+
+class UserModel(BaseModel):
+    __tablename__ = 'user'
+
+    id = UUIDColumn()
+    name = Column(String)
+
+    #event = relationship('EventModel', back_populates='user')
 
 
 
