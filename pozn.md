@@ -57,7 +57,7 @@ smazat subject, prohodit vztah lesson */1 event
 spoluprace s richterem
     musime se shodnout na nazvech EventGQL
 
-# Alfa verze
+# Alfa verze - 29.11.
 Struktury databaze, modely, cteni z databaze (ne generovani nahodnych dat) 20 %
 
 # 20.10.
@@ -67,3 +67,4 @@ gql_empty
 Proč nám nejde v pg adminu po compose up naše modely: Event, EventType
 Jak zprovoznit jupyter? - Event, EventType - už se zobrazují, ale neaktualizují se
 Nečitelné https://github.com/hrbolek/learning/blob/master/notebooks/inf/05B_sqlalchemy.ipynb
+
