@@ -13,6 +13,7 @@ services:
     restart: always
     ports:
       - 31002:8888
+      - 31102:9992
     volumes:
       - .:/home/jovyan/work
 
