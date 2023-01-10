@@ -68,3 +68,8 @@ Proč nám nejde v pg adminu po compose up naše modely: Event, EventType
 Jak zprovoznit jupyter? - Event, EventType - už se zobrazují, ale neaktualizují se
 Nečitelné https://github.com/hrbolek/learning/blob/master/notebooks/inf/05B_sqlalchemy.ipynb
 
+# projektový den 29.11.
+localhost:31180/ui/api - API celého systému
+               /api/nogql/utils/umlschema - schema celeho systemu
+
+model který není zodpovědný vypadá jinak (extarnal)
