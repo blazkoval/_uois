@@ -73,3 +73,6 @@ localhost:31180/ui/api - API celého systému
                /api/nogql/utils/umlschema - schema celeho systemu
 
 model který není zodpovědný vypadá jinak (extarnal)
+
+# beta verze
+
