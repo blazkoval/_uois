@@ -30,10 +30,10 @@ services:
     ports:
       - 31120:8000
 
-  gql_events:
-    image: gql_events
+  gql_events_simple:
+    image: gql_events_simple
     build:
-      context: ./gql_events
+      context: ./gql_events_simple
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
@@ -41,10 +41,10 @@ services:
     depends_on:
       - postgres
 
-  gql_project3:
-    image: gql_project3
+  gql_events:
+    image: gql_events
     build:
-      context: ./gql_project3
+      context: ./gql_events
     environment: 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=example
