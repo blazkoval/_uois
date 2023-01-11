@@ -68,7 +68,7 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
 
 # lesson resolvers ??
 
-# location resolvers ??
+# location resolvers ?? nebude potreba, pokud se budu v QUery taza
 
 # subject resolvers ??
 
