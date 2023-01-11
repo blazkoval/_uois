@@ -33,7 +33,11 @@ def DetermineEvents():
         {'id':'73dda931-1629-4193-963a-c55397b0a706','name':'',
             'start': datetime.datetime(), 'end': datetime.datetime() + datetime.timedelta(hours=1,minutes=30),
             'capacity':'',
-            'comment':''
+            'comment':'',
+            'lastchange':'',
+
+            'eventtype_id':'',
+            'location_id':'',
         }
     ]
     return data
