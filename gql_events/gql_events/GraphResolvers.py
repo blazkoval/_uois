@@ -31,24 +31,23 @@ from gql_events.DBDefinitions import EventGroupModel, EventOrganizerModel, Event
 
 # event resolvers
 resolveEventById = createEntityByIdGetter(EventModel)
-resolveEventPage = createEntityGetter(EventModel) # ?? k cemu to je?
-resolveEventAll = createEntityGetter(EventModel) # ?? k cemu to je?
+resolveEventPage = createEntityGetter(EventModel)
+resolveEventAll = createEntityGetter(EventModel)
 resolveUpdateEvent = createUpdateResolver(EventModel)
 resolveInsertEvent = createInsertResolver(EventModel)
 
+resolveLocationForEvent = create1NGetter(LocationModel, foreignKeyName='event_id')
 resolveLessonsForEvent = create1NGetter(LessonModel, foreignKeyName='event_id')
-
-#resolveUsersForEvent = create1NGetter(Event_Organizer, foreignKeyName='event_id', options=joinedload(Event_Organizer.user))
-resolveUsersForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
-# ??? pro participants
-#resolveGroupsForEvent = create1NGetter(EventGroupModel, foreignKeyName='event_id', options=joinedload(EventGroupModel.group))
+resolveOrganizersForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
+resolveParticipantsForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
+resolveGroupsForEvent = create1NGetter(EventGroupModel, foreignKeyName='event_id', options=joinedload(EventGroupModel.group))
 
 # eventtype resolvers
 resolveEventTypeById = createEntityByIdGetter(EventTypeModel)
-resolveEventForEventType = create1NGetter(EventModel, foreignKeyName = 'eventtype_id')
+resolveEventTypePage = createEntityGetter(EventTypeModel)
 resolveUpdateEventType = createUpdateResolver(EventTypeModel)
 resolveInsertEventType = createInsertResolver(EventTypeModel)
-
+resolveEventForEventType = create1NGetter(EventModel, foreignKeyName = 'eventtype_id')
 
 # group resolvers ??
 resolveEventsForGroup_ = create1NGetter(EventGroupModel, foreignKeyName='group_id', options=joinedload(EventGroupModel.event))
@@ -68,14 +67,14 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
 
 # lesson resolvers ??
 
-# location resolvers ?? nebude potreba, pokud se budu v QUery taza
+# location resolvers ?? nebude potreba, pokud se budu v Query ptat na event_by_location tak ano
 
 # subject resolvers ??
 
 # user reslovers
 resolveEventsForUser_ = create1NGetter(EventOrganizerModel, foreignKeyName='user_id', options=joinedload(EventOrganizerModel.event))
 
-async def resolveEventsForUser(session, id, startdate=None, enddate=None):
+async def resolveEventsForOrganizer(session, id, startdate=None, enddate=None):
     statement = select(EventModel).join(EventOrganizerModel)
     if startdate is not None:
         statement = statement.filter(EventModel.start >= startdate)
@@ -86,4 +85,15 @@ async def resolveEventsForUser(session, id, startdate=None, enddate=None):
     response = await session.execute(statement)
     result = response.scalars()
     return result
-    
+async def resolveEventsForParticipant(session, id, startdate=None, enddate=None):
+    statement = select(EventModel).join(EventParticipantModel)
+    if startdate is not None:
+        statement = statement.filter(EventModel.start >= startdate)
+    if enddate is not None:
+        statement = statement.filter(EventModel.end <= enddate)
+    statement = statement.filter(EventParticipantModel.user_id == id)
+
+    response = await session.execute(statement)
+    result = response.scalars()
+    return result
+      

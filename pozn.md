@@ -78,12 +78,5 @@ model který není zodpovědný vypadá jinak (extarnal)
 vyuzivat tu novou verzi na hrbolek github - GraphResolvers
 
 RESOLVERY:
-mezitabulky???
-resolveEventPage?
-mám dělat i resolvery pro cizí tabulky?
-resolver__ByThreeLetters
-
-GraphTypeDefiniton
-co znamena Union? nekde je, nekde neni - tam kde je list, tam ne
 
 Zprovoznit endpoint
