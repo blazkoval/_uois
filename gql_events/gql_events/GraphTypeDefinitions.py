@@ -64,7 +64,7 @@ class GroupGQLModel:
             
 """ \/ 60"""
 
-from gql_events.GraphResolvers import resolveEventById, resolveUsersForEvent, resolveGroupsForEvent
+from gql_events.GraphResolvers import resolveEventById, resolveUsersForEvent#, resolveGroupsForEvent
 @strawberryA.federation.type(keys=["id"], description="")
 class EventGQLModel:
     #gql_ug - GraphTypeDefinitions - 15

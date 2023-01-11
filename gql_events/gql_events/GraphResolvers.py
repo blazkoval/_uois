@@ -20,7 +20,7 @@ from uoishelpers.resolvers import putSingleEntityToDb
 ###########################################################################################################################
 from gql_events.DBDefinitions import EventModel, EventTypeModel
 from gql_events.DBDefinitions import UserModel, GroupModel, LocationModel, LessonModel, SubjectModel
-from gql_events.DBDefinitions import Event_Group, Event_Organizer, Event_Participant
+from gql_events.DBDefinitions import EventGroupModel, EventOrganizerModel, EventParticipantModel
 
 ###########################################################################################################################
 #

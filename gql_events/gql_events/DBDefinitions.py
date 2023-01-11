@@ -42,22 +42,32 @@ def UUIDColumn(name=None):
     else:
         return Column(name, UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
 #id = Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("uuid_generate_v4()"),)    
+class EventParticipantModel(BaseModel):
+    __tablename__ = "events_participants"
+    id = UUIDColumn()
+    event_id = Column(ForeignKey('events.id'))
+    user_id = Column(ForeignKey('users.id'))
 
+    event = relationship('EventModel')
+    user = relationship('UserModel')
 
-Event_Participant = Table('events_participants', BaseModel.metadata,
-    Column('event_id', ForeignKey('event.id'), primary_key=True),
-    Column('participant_id', ForeignKey('user.id'), primary_key=True)
-    )
+class EventOrganizerModel(BaseModel):
+    __tablename__ = "events_organizers"
+    id = UUIDColumn()
+    event_id = Column(ForeignKey('events.id'))
+    user_id = Column(ForeignKey('users.id'))
 
-Event_Organizer = Table('events_organizers', BaseModel.metadata,
-    Column('event_id', ForeignKey('event.id'), primary_key=True),
-    Column('organizer_id', ForeignKey('user.id'), primary_key=True)
-    )
+    event = relationship('EventModel')
+    user = relationship('UserModel')
 
-Event_Group = Table('events_groups', BaseModel.metadata,
-    Column('event_id', ForeignKey('event.id'), primary_key=True),
-    Column('group_id', ForeignKey('group.id'), primary_key=True)
-    )
+class EventGroupModel(BaseModel):
+    __tablename__ = "events_groups"
+    id = UUIDColumn()
+    event_id = Column(ForeignKey('events.id'))
+    group_id = Column(ForeignKey('groups.id'))
+
+    event = relationship('EventModel')
+    group = relationship('GroupModel')
 
 class EventModel(BaseModel):
 
@@ -78,10 +88,9 @@ class EventModel(BaseModel):
     location = relationship('LocationModel', back_populates='events')
     lessons = relationship('LessonModel', back_populates='event')
 
-    participants = relationship('UserModel', secondary=Event_Participant, back_populates='events_participants')
-    organizers = relationship('UserModel', secondary=Event_Organizer, back_populates='events_organizers')
-    groups = relationship('GroupModel', secondary=Event_Group, back_populates='events_groups')
-
+    participants = relationship('EventParticipantModel', back_populates = 'event')
+    organizers = relationship('EventParticipantModel', back_populates = 'event')
+    groups = relationship('EventGroupModel', back_populates='event')
 class EventTypeModel(BaseModel):
     __tablename__ = 'eventtype'
 
@@ -125,17 +134,16 @@ class GroupModel(BaseModel):
     id = UUIDColumn()
     name = Column(String)
 
-    events = relationship('EventModel', secondary=Event_Group, back_populates='events_groups')
-
+    events = relationship('EventGroupModel', back_populates='event')
 class UserModel(BaseModel):
     __tablename__ = 'user'
 
     id = UUIDColumn()
     name = Column(String)
 
-    events_p = relationship('EventModel', secondary=Event_Participant, back_populates='events_participants')
-    events_o = relationship('EventModel', secondary=Event_Organizer, back_populates='events_organizers')
-
+    events_p = relationship('EventParticipantModel', back_populates='user')
+    events_o = relationship('EventOrganizerModel', back_populates='user')
+    
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
