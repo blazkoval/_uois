@@ -74,5 +74,11 @@ localhost:31180/ui/api - API celého systému
 
 model který není zodpovědný vypadá jinak (extarnal)
 
-# beta verze
+# Beta verze - 12.01.
+vyuzivat tu novou verzi na hrbolek github - GraphResolvers
 
+RESOLVERY:
+mezitabulky???
+resolveEventPage?
+mám dělat i resolvery pro cizí tabulky?
+resolver__ByThreeLetters
