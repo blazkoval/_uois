@@ -82,10 +82,10 @@ class EventModel(BaseModel):
     lastchange = Column(DateTime, default=datetime.datetime.now)
     
     eventtype_id = Column(ForeignKey('eventtype.id'))
-    location_id = Column(ForeignKey('location.id'))
+    facility_id = Column(ForeignKey('facility.id'))
     
     eventtype = relationship('EventTypeModel', back_populates='events')
-    location = relationship('LocationModel', back_populates='events')
+    facility = relationship('FacilityModel', back_populates='events')
     lessons = relationship('LessonModel', back_populates='event')
 
     participants = relationship('EventParticipantModel', back_populates = 'event')
@@ -99,35 +99,22 @@ class EventTypeModel(BaseModel):
 
     events = relationship('EventModel', back_populates='eventtype')
 
-class LocationModel(BaseModel):
-    __tablename__ = 'location'
+class FacilityModel(BaseModel):
+    __tablename__ = 'facility'
 
     id = UUIDColumn()
     name = Column(String)
 
-    events = relationship('EventModel', back_populates='location')
+    events = relationship('EventModel', back_populates='facility')
 
 class LessonModel(BaseModel):
     __tablename__ = 'lesson'
 
     id = UUIDColumn()
     name = Column(String)
-    
    
     event_id = Column(ForeignKey('event.id')) # ?
-    subject_id = Column(ForeignKey('subject.id'))
-
     event = relationship('EventModel', back_populates='lessons')
-    subject = relationship('SubjectModel', back_populates='lessons')
-
-class SubjectModel(BaseModel):
-    __tablename__ = 'subject'
-
-    id = UUIDColumn()
-    name = Column(String)
-
-    lessons = relationship('LessonModel', back_populates='subject')
-
 class GroupModel(BaseModel):
     __tablename__ = 'group'
 

@@ -19,7 +19,7 @@ from uoishelpers.resolvers import putSingleEntityToDb
 #
 ###########################################################################################################################
 from gql_events.DBDefinitions import EventModel, EventTypeModel
-from gql_events.DBDefinitions import UserModel, GroupModel, LocationModel, LessonModel, SubjectModel
+from gql_events.DBDefinitions import UserModel, GroupModel, FacilityModel, LessonModel
 from gql_events.DBDefinitions import EventGroupModel, EventOrganizerModel, EventParticipantModel
 
 ###########################################################################################################################
@@ -36,7 +36,7 @@ resolveEventAll = createEntityGetter(EventModel)
 resolveUpdateEvent = createUpdateResolver(EventModel)
 resolveInsertEvent = createInsertResolver(EventModel)
 
-resolveLocationForEvent = create1NGetter(LocationModel, foreignKeyName='event_id')
+resolveFacilityForEvent = create1NGetter(FacilityModel, foreignKeyName='event_id')
 resolveLessonsForEvent = create1NGetter(LessonModel, foreignKeyName='event_id')
 resolveOrganizersForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
 resolveParticipantsForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
@@ -67,7 +67,7 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
 
 # lesson resolvers ??
 
-# location resolvers ?? nebude potreba, pokud se budu v Query ptat na event_by_location tak ano
+# facility resolvers ?? nebude potreba, pokud se budu v Query ptat na event_by_facility tak ano
 
 # subject resolvers ??
 

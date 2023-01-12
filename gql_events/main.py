@@ -76,6 +76,8 @@ class MyGraphQL(GraphQL):
             'asyncSessionMaker': await RunOnceAndReturnSessionMaker(),
             'user': self._user
             }
+            
+#from gql_events.GraphTypeDefinitions import schema
 
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(

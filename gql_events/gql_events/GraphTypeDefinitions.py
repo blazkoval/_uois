@@ -28,7 +28,7 @@ def AsyncSessionFromInfo(info):
 #
 ###########################################################################################################################
 
-from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent, resolveLessonsForEvent, resolveLocationForEvent 
+from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent, resolveLessonsForEvent, resolveFacilityForEvent 
 @strawberryA.federation.type(keys=["id"], description="")
 class EventGQLModel:
     #gql_ug - GraphTypeDefinitions - 15
@@ -103,12 +103,12 @@ class EventGQLModel:
                 result = await resolveEventTypeById(session, self.eventtype_id)
                 return result
 
-    @strawberryA.field(description="""Location (like K44/175)""")
-    async def location(self, info: strawberryA.types.Info) -> Union['LocationGQLModel', None]:
+    @strawberryA.field(description="""Facility (like K44/175)""")
+    async def facility(self, info: strawberryA.types.Info) -> Union['FacilityGQLModel', None]:
         async with withInfo(info) as session:
-            links = await resolveLocationForEvent(session,  self.id)
+            links = await resolveFacilityForEvent(session,  self.id)
             result = list(map(lambda item: item.group, links))
-            print('event.location', result)
+            print('event.facility', result)
             return result
     
     
@@ -205,12 +205,12 @@ class LessonGQLModel:
         return self.name
 
 @strawberryA.federation.type(keys=["id"], description="")
-class LocationGQLModel:
+class FacilityGQLModel:
     id: strawberryA.ID = strawberryA.federation.field(external=True)
 
     @classmethod
     def resolve_reference(cls, id: strawberryA.ID):
-        return LocationGQLModel(id=id)
+        return FacilityGQLModel(id=id)
         
     @strawberryA.field(description="""primary key""")
     def id(self) -> strawberryA.ID:
@@ -284,6 +284,6 @@ class Query:
     #gql_ug - GraphTypeDefinitions - 424
 
 
-#event_by_location - bude potreba resolver
+#event_by_facility - bude potreba resolver
 
     
