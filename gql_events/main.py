@@ -77,7 +77,7 @@ class MyGraphQL(GraphQL):
             'user': self._user
             }
             
-#from gql_events.GraphTypeDefinitions import schema
+from gql_events.GraphTypeDefinitions import schema
 
 ## ASGI app, kterou "moutneme"
 graphql_app = MyGraphQL(

@@ -107,6 +107,10 @@ class UserEditorGQLModel:
     ##
     ## Mutace, obejiti problemu s federativnim API
     ##
+
+    #pridat id: ... a result: ... z nove verze
+
+
     @strawberryA.field(description="""Entity primary key""")
     def id(self) -> strawberryA.ID:
         return self.id

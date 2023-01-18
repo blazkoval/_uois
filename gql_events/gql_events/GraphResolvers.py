@@ -65,11 +65,9 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
     result = response.scalars()
     return result
 
-# lesson resolvers ??
+# lesson resolvers - odpovednost projekt c. 7
 
 # facility resolvers ?? nebude potreba, pokud se budu v Query ptat na event_by_facility tak ano
-
-# subject resolvers ??
 
 # user reslovers
 resolveEventsForUser_ = create1NGetter(EventOrganizerModel, foreignKeyName='user_id', options=joinedload(EventOrganizerModel.event))

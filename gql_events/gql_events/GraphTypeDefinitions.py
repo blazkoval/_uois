@@ -28,6 +28,9 @@ def AsyncSessionFromInfo(info):
 #
 ###########################################################################################################################
 
+
+
+
 from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent, resolveLessonsForEvent, resolveFacilityForEvent 
 @strawberryA.federation.type(keys=["id"], description="")
 class EventGQLModel:
@@ -281,9 +284,19 @@ class Query:
             return result
 
 
+
     #gql_ug - GraphTypeDefinitions - 424
 
 
 #event_by_facility - bude potreba resolver
 
-    
+###########################################################################################################################
+#
+# Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
+# se ve schema objevi jen ty struktury, ktere si strawberry dokaze odvodit z Query. Protoze v teto konkretni implementaci
+# nektere modely nejsou s Query propojene je potreba je explicitne vyjmenovat. Jinak ve federativnim schematu nebude
+# dostupne rozsireni, ktere tento prvek federace implementuje.
+#
+###########################################################################################################################
+
+schema = strawberryA.federation.Schema(Query, types=(UserGQLModel, ))    
