@@ -1,7 +1,6 @@
 kopie do githubu
 vlastni projekt-konkretni kontejner
 vytvorit vedle gql_ug: gql_ug-kopie-"zkousky" a zde zacit praci
-verze alpha 80% projektu: SQL + postgres !!! za 2 tydny !!!
 
 docker compose - pro spusteni
 docker image - vyvtarime, zverejnime cele komunite
@@ -77,6 +76,19 @@ model který není zodpovědný vypadá jinak (extarnal)
 # Beta verze - 12.01.
 vyuzivat tu novou verzi na hrbolek github - GraphResolvers
 
-RESOLVERY:
+v README.md jsou rady 
 
-Zprovoznit endpoint
+podle gql_ug > GTD
+vytvorit editor EventEditorGQLModel, navazat na entitu 
+    resolve_reference zkopirovat i s ID
+    pridat atributy ID a result
+    update zkopirovat krom Modelu a resolverUpdate...
+    pridat metody update, insert atd.
+    jestlize je lastchange, tak...?
+
+    Editor bude jen jeden
+
+# konzultace 19.01.
+nefunguje apollo
+sjednotit nazvy se skupinou 7
+Zindler musi dodelat dbfeeder

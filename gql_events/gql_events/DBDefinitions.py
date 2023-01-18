@@ -70,9 +70,7 @@ class EventGroupModel(BaseModel):
     group = relationship('GroupModel')
 
 class EventModel(BaseModel):
-
-    __tablename__ = 'event'
-
+    __tablename__ = 'events'
     id = UUIDColumn()
     name = Column(String)
     start = Column(DateTime)
@@ -80,57 +78,46 @@ class EventModel(BaseModel):
     capacity = Column(Integer)
     comment = Column(String)
     lastchange = Column(DateTime, default=datetime.datetime.now)
-    
-    eventtype_id = Column(ForeignKey('eventtype.id'))
-    facility_id = Column(ForeignKey('facility.id'))
+    #lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.mow())
+    eventtype_id = Column(ForeignKey('eventtypes.id'))
+    facility_id = Column(ForeignKey('facilities.id'))
     
     eventtype = relationship('EventTypeModel', back_populates='events')
     facility = relationship('FacilityModel', back_populates='events')
     lessons = relationship('LessonModel', back_populates='event')
-
     participants = relationship('EventParticipantModel', back_populates = 'event')
     organizers = relationship('EventParticipantModel', back_populates = 'event')
     groups = relationship('EventGroupModel', back_populates='event')
 class EventTypeModel(BaseModel):
-    __tablename__ = 'eventtype'
-
+    __tablename__ = 'eventtypes'
     id = UUIDColumn()
     name = Column(String)
 
     events = relationship('EventModel', back_populates='eventtype')
 
 class FacilityModel(BaseModel):
-    __tablename__ = 'facility'
-
+    __tablename__ = 'facilities'
     id = UUIDColumn()
-    name = Column(String)
 
     events = relationship('EventModel', back_populates='facility')
 
 class LessonModel(BaseModel):
-    __tablename__ = 'lesson'
-
+    __tablename__ = 'lessons'
     id = UUIDColumn()
-    name = Column(String)
-   
-    event_id = Column(ForeignKey('event.id')) # ?
+    event_id = Column(ForeignKey('events.id'))
+    
     event = relationship('EventModel', back_populates='lessons')
 class GroupModel(BaseModel):
-    __tablename__ = 'group'
-
+    __tablename__ = 'groups'
     id = UUIDColumn()
-    name = Column(String)
 
     events = relationship('EventGroupModel', back_populates='event')
 class UserModel(BaseModel):
-    __tablename__ = 'user'
-
+    __tablename__ = 'users'
     id = UUIDColumn()
-    name = Column(String)
 
     events_p = relationship('EventParticipantModel', back_populates='user')
     events_o = relationship('EventOrganizerModel', back_populates='user')
-    
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
