@@ -1,10 +1,28 @@
 version: "3.9"
 
 services:
+  frontend:
+    image: frontend
+    build:
+      # context definuje cestu k popisu
+      context: ./frontend
+    healthcheck:
+      # definice, umoznujici provest test, zda je kontejner v poradku (vsimnete si portu)
+      test: "curl -f -X GET http://localhost:8000/ui/ || exit 1"
+      interval: 60s
+      retries: 3
+      start_period: 60s
+      timeout: 10s
+    restart: on-failure:3 # nedojde k restartu pokud je kontejner "unhealthy", maximalne 3 pokusy
+
   apollo:
     image: apollo
     build:
       context: ./apollo
+    depends_on:
+      # kontejnery, ktere musi byt spusteny drive
+      - gql_ug
+      - gql_events
     ports:
       - 31121:3000
 
@@ -71,11 +89,14 @@ services:
     ports:
       - 31122:80
 
-  nginx:
+  nginx: # funguje jako proxy mezi vnejskem a vnitrkem, tudy tece cela HTTP komunikace
     build:
+      # context definuje cestu k popisu
       context: ./nginx
-    ports:
-      - 80:80  #50081:80
+    ports: 
+      # vnejsi port : port, kde sluzbu poskytuje kontejner
+      - 80:80
     depends_on:
+      # kontejnery, kter musi byt spusteny drive
       - postgres
       - apollo
