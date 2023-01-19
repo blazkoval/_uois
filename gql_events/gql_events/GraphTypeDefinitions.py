@@ -31,7 +31,7 @@ def AsyncSessionFromInfo(info):
 
 
 
-from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent, resolveLessonsForEvent, resolveFacilityForEvent 
+from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent, resolveFacilityForEvent 
 @strawberryA.federation.type(keys=["id"], description="")
 class EventGQLModel:
     #gql_ug - GraphTypeDefinitions - 15
@@ -71,6 +71,31 @@ class EventGQLModel:
     def lastchange(self) -> Union[datetime.datetime,None]:
         return self.lastchange
     
+    @strawberryA.field(description="""Event's type (like Zkouška)""")
+    async def eventtype(self, info: strawberryA.types.Info) -> Union['EventTypeGQLModel', None]:
+        async with withInfo(info) as session:
+            if self.eventtype_id is None:
+                return None
+            else:
+                #result = resolveEventTypeById(session,  self.grouptype_id)
+                result = await resolveEventTypeById(session, self.eventtype_id)
+                return result   
+
+    @strawberryA.field(description="""Facility (like K44/175)""")
+    async def facility(self, info: strawberryA.types.Info) -> Union['FacilityGQLModel', None]:
+        async with withInfo(info) as session:
+            links = await resolveFacilityForEvent(session,  self.id)
+            result = list(map(lambda item: item.group, links))
+            print('event.facility', result)
+            return result
+
+    @strawberryA.field(description="""Participants of the event""")
+    async def participants(self, info: strawberryA.types.Info) -> List['UserGQLModel']:
+        async with withInfo(info) as session:
+            links = await resolveParticipantsForEvent(session,  self.id)
+            result = list(map(lambda item: item.user, links))
+            print('event.prts', result)
+            return result
 
     @strawberryA.field(description="""Organizers of the event""")
     async def organizers(self, info: strawberryA.types.Info) -> List['UserGQLModel']:
@@ -78,14 +103,6 @@ class EventGQLModel:
             links = await resolveOrganizersForEvent(session,  self.id)
             result = list(map(lambda item: item.user, links))
             print('event.orgs', result)
-            return result
-   
-    @strawberryA.field(description="""Participants of the event""")
-    async def participants(self, info: strawberryA.types.Info) -> List['UserGQLModel']:
-        async with withInfo(info) as session:
-            links = await resolveParticipantsForEvent(session,  self.id)
-            result = list(map(lambda item: item.user, links))
-            print('event.prts', result)
             return result
 
     @strawberryA.field(description="""Groups of users linked to the event""")
@@ -96,34 +113,6 @@ class EventGQLModel:
             print('event.group', result)
             return result
     
-    @strawberryA.field(description="""Event's type (like Zkouška)""")
-    async def eventtype(self, info: strawberryA.types.Info) -> Union['EventTypeGQLModel', None]:
-        async with withInfo(info) as session:
-            if self.eventtype_id is None:
-                return None
-            else:
-                #result = resolveEventTypeById(session,  self.grouptype_id)
-                result = await resolveEventTypeById(session, self.eventtype_id)
-                return result
-
-    @strawberryA.field(description="""Facility (like K44/175)""")
-    async def facility(self, info: strawberryA.types.Info) -> Union['FacilityGQLModel', None]:
-        async with withInfo(info) as session:
-            links = await resolveFacilityForEvent(session,  self.id)
-            result = list(map(lambda item: item.group, links))
-            print('event.facility', result)
-            return result
-    
-    
-    @strawberryA.field(description="""""")
-    async def lessons(self, info: strawberryA.types.Info) -> List['LessonGQLModel']:
-        async with withInfo(info) as session:
-            links = await resolveLessonsForEvent(session,  self.id)
-            result = list(map(lambda item: item.group, links))
-            print('event.lessons', result)
-            return result
-
-
 from gql_events.GraphResolvers import resolveEventTypeById, resolveEventForEventType
 @strawberryA.federation.type(keys=["id"], description="")
 class EventTypeGQLModel:
@@ -144,13 +133,28 @@ class EventTypeGQLModel:
     def name(self) -> Union[str, None]:
         return self.name
 
-    @strawberryA.field(description="""List of groups which have this type""")
-    async def groups(self, info: strawberryA.types.Info) -> typing.List['EventGQLModel']:
+    @strawberryA.field(description="""List of events which have this type""")
+    async def events(self, info: strawberryA.types.Info) -> typing.List['EventGQLModel']:
         #result = await resolveGroupForGroupType(session,  self.id)
         async with withInfo(info) as session:
             result = await resolveEventForEventType(session, self.id)
             return result    
 
+@strawberryA.federation.type(keys=["id"], description="")
+class FacilityGQLModel:
+    id: strawberryA.ID = strawberryA.federation.field(external=True)
+
+    @classmethod
+    def resolve_reference(cls, id: strawberryA.ID):
+        return FacilityGQLModel(id=id)
+        
+    @strawberryA.field(description="""primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+    
+    @strawberryA.field(description="""name""")
+    def name(self) -> Union[str, None]:
+        return self.name
 """ /\ 29"""
 from gql_events.GraphResolvers import resolveEventsForOrganizer, resolveEventsForParticipant
 @strawberryA.federation.type(extend=True, keys=["id"])
@@ -173,6 +177,7 @@ class UserGQLModel:
             result = await resolveEventsForParticipant(session,  self.id, startdate, enddate)
             return result
 
+
 from gql_events.GraphResolvers import resolveEventsForGroup
 @strawberryA.federation.type(extend=True, keys=["id"])
 class GroupGQLModel:
@@ -191,37 +196,6 @@ class GroupGQLModel:
             
 """ \/ 60"""
 
-@strawberryA.federation.type(keys=["id"], description="")
-class LessonGQLModel:
-    id: strawberryA.ID = strawberryA.federation.field(external=True)
-
-    @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
-        return LessonGQLModel(id=id)
-    
-    @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
-        return self.id
-    
-    @strawberryA.field(description="""name""")
-    def name(self) -> Union[str, None]:
-        return self.name
-
-@strawberryA.federation.type(keys=["id"], description="")
-class FacilityGQLModel:
-    id: strawberryA.ID = strawberryA.federation.field(external=True)
-
-    @classmethod
-    def resolve_reference(cls, id: strawberryA.ID):
-        return FacilityGQLModel(id=id)
-        
-    @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
-        return self.id
-    
-    @strawberryA.field(description="""name""")
-    def name(self) -> Union[str, None]:
-        return self.name
 
 ###########################################################################################################################
 #
@@ -283,12 +257,10 @@ class Query:
             result = await resolveEventTypePage(session,  skip, limit)
             return result
 
-
-
     #gql_ug - GraphTypeDefinitions - 424
 
 
-#event_by_facility - bude potreba resolver
+#event_by_facility - 
 
 ###########################################################################################################################
 #

@@ -19,7 +19,7 @@ from uoishelpers.resolvers import putSingleEntityToDb
 #
 ###########################################################################################################################
 from gql_events.DBDefinitions import EventModel, EventTypeModel
-from gql_events.DBDefinitions import UserModel, GroupModel, FacilityModel, LessonModel
+from gql_events.DBDefinitions import UserModel, GroupModel, FacilityModel
 from gql_events.DBDefinitions import EventGroupModel, EventOrganizerModel, EventParticipantModel
 
 ###########################################################################################################################
@@ -37,7 +37,6 @@ resolveUpdateEvent = createUpdateResolver(EventModel)
 resolveInsertEvent = createInsertResolver(EventModel)
 
 resolveFacilityForEvent = create1NGetter(FacilityModel, foreignKeyName='event_id')
-resolveLessonsForEvent = create1NGetter(LessonModel, foreignKeyName='event_id')
 resolveOrganizersForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
 resolveParticipantsForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
 resolveGroupsForEvent = create1NGetter(EventGroupModel, foreignKeyName='event_id', options=joinedload(EventGroupModel.group))
@@ -49,7 +48,11 @@ resolveUpdateEventType = createUpdateResolver(EventTypeModel)
 resolveInsertEventType = createInsertResolver(EventTypeModel)
 resolveEventForEventType = create1NGetter(EventModel, foreignKeyName = 'eventtype_id')
 
-# group resolvers ??
+# lesson resolvers - odpovednost projekt c. 7 ... vypuštěno
+
+# facility resolvers - nebude potreba, pokud se budu v Query ptat na event_by_facility tak ano
+
+# group resolvers
 resolveEventsForGroup_ = create1NGetter(EventGroupModel, foreignKeyName='group_id', options=joinedload(EventGroupModel.event))
 
 from sqlalchemy.future import select
@@ -64,10 +67,6 @@ async def resolveEventsForGroup(session, id, startdate=None, enddate=None):
     response = await session.execute(statement)
     result = response.scalars()
     return result
-
-# lesson resolvers - odpovednost projekt c. 7
-
-# facility resolvers ?? nebude potreba, pokud se budu v Query ptat na event_by_facility tak ano
 
 # user reslovers
 resolveEventsForUser_ = create1NGetter(EventOrganizerModel, foreignKeyName='user_id', options=joinedload(EventOrganizerModel.event))

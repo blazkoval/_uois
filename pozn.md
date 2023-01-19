@@ -89,6 +89,44 @@ vytvorit editor EventEditorGQLModel, navazat na entitu
     Editor bude jen jeden
 
 # konzultace 19.01.
-nefunguje apollo
-sjednotit nazvy se skupinou 7
-Zindler musi dodelat dbfeeder
+
+smazat lessonModel i v resolverech
+
+frontend kontejner - stahnout a pridat do dockercompose
+stahnout nginx.config z hrbolek
+
+localhost:80/ui/api 
+
+v jupyteru http request - na konci 05D:
+
+import requests
+
+query = """query {
+    user(id: 1) {
+        id
+        name
+        surname
+        email
+    }
+
+    group(id: 1) {
+        id
+        name
+    }
+}"""
+payload = {'query': query}
+r = requests.post("http://localhost:9994/gql", json=payload)
+result = r.json()
+
+print(result)
+
+
+http://apollo:3000/gql poslat request, da odpoved v jsonu
+
+
+dodelat dbfeeder
+
+# po konzultaci
+![GraphiQL - proč je tam group_id?](gql_events/gql_events/Graphiql.png)
+dosavadní postup ověřen přes pgadmin a GraphiQL - vše funkční
+

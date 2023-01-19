@@ -48,8 +48,8 @@ class EventParticipantModel(BaseModel):
     event_id = Column(ForeignKey('events.id'))
     user_id = Column(ForeignKey('users.id'))
 
-    event = relationship('EventModel')
-    user = relationship('UserModel')
+    event = relationship('EventModel', back_populates = 'participants')
+    user = relationship('UserModel', back_populates = 'events_p')
 
 class EventOrganizerModel(BaseModel):
     __tablename__ = "events_organizers"
@@ -57,8 +57,8 @@ class EventOrganizerModel(BaseModel):
     event_id = Column(ForeignKey('events.id'))
     user_id = Column(ForeignKey('users.id'))
 
-    event = relationship('EventModel')
-    user = relationship('UserModel')
+    event = relationship('EventModel', back_populates = 'organizers')
+    user = relationship('UserModel', back_populates = 'events_o')
 
 class EventGroupModel(BaseModel):
     __tablename__ = "events_groups"
@@ -66,8 +66,8 @@ class EventGroupModel(BaseModel):
     event_id = Column(ForeignKey('events.id'))
     group_id = Column(ForeignKey('groups.id'))
 
-    event = relationship('EventModel')
-    group = relationship('GroupModel')
+    event = relationship('EventModel', back_populates = 'groups')
+    group = relationship('GroupModel', back_populates = 'events')
 
 class EventModel(BaseModel):
     __tablename__ = 'events'
@@ -84,9 +84,8 @@ class EventModel(BaseModel):
     
     eventtype = relationship('EventTypeModel', back_populates='events')
     facility = relationship('FacilityModel', back_populates='events')
-    lessons = relationship('LessonModel', back_populates='event')
     participants = relationship('EventParticipantModel', back_populates = 'event')
-    organizers = relationship('EventParticipantModel', back_populates = 'event')
+    organizers = relationship('EventOrganizerModel', back_populates = 'event')
     groups = relationship('EventGroupModel', back_populates='event')
 class EventTypeModel(BaseModel):
     __tablename__ = 'eventtypes'
@@ -101,17 +100,11 @@ class FacilityModel(BaseModel):
 
     events = relationship('EventModel', back_populates='facility')
 
-class LessonModel(BaseModel):
-    __tablename__ = 'lessons'
-    id = UUIDColumn()
-    event_id = Column(ForeignKey('events.id'))
-    
-    event = relationship('EventModel', back_populates='lessons')
 class GroupModel(BaseModel):
     __tablename__ = 'groups'
     id = UUIDColumn()
 
-    events = relationship('EventGroupModel', back_populates='event')
+    events = relationship('EventGroupModel', back_populates='group')
 class UserModel(BaseModel):
     __tablename__ = 'users'
     id = UUIDColumn()
