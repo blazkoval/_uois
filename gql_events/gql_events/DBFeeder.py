@@ -1,6 +1,6 @@
 from doctest import master
 from functools import cache
-from gql_workflow.DBDefinitions import BaseModel, UserModel, GroupModel, RoleTypeModel
+from gql_workflow.DBDefinitions import BaseModel, EventTypeModel, EventModel, UserModel, GroupModel, FacilityModel
 
 import random
 import itertools
@@ -26,6 +26,9 @@ def singleCall(asyncFunc):
 # zde definujte sve funkce, ktere naplni random data do vasich tabulek
 #
 ###########################################################################################################################
+
+# zkratka a jmeno; dodělat funkci; eventGroups, eventUsers??
+# import nefunkční
 
 @cache
 def DetermineEvents():
@@ -59,9 +62,43 @@ def DetermineEventTypes():
     return data
 
 @cache
-def DetermineLocations():
+def DetermineFacilitys():
     data = [
         {'id': '812d1598-4771-4d38-a52b-4cfeff075488', 'name': 'KJB'},
         {'id': '090d7268-9661-4594-99db-e70c3a187e2d', 'name': 'Sumavska'},
         {'id': '0a5ce699-0763-4e6f-8278-9f19b73d50fd', 'name': 'Kounicova'},
     ]
+
+@cache
+def DetermineGroups():
+    data = [
+        {'id': '4d71b800-d74c-4f02-9d4f-ef01ece884c5', 'name': '23-KB1'}, # zkratka, jmeno?
+        {'id': 'aa1b4f1e-42c2-48f9-a5ec-68aec05e529b', 'name': '23-KB-C'},
+        {'id': 'cb37641f-27df-46a9-800f-f7057260733a', 'name': '23-5BSV'},
+        {'id': '8becd27a-2793-455b-960e-e4964672e9f9', 'name': '23-5LTZ'},
+        {'id': '67bb9e0d-1b28-45ef-be19-05f6a10c320d', 'name': '23-5RLP'},
+        {'id': '649420bf-8dc1-4154-8055-688f1e696b05', 'name': '23-5ZM'},
+    ]
+
+@cache
+def DetermineUsers():
+    data = [
+
+    ]
+
+
+
+import asyncio
+async def predefineAllDataStructures(asyncSessionMaker):
+     asyncio.gather(
+        putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, DetermineEvents),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, EventTypeModel, DetermineEventTypes),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityModel, DetermineFacilitys),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, GroupModel, DetermineGroups),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, UserModel, DetermineUsers),
+        
+     )
+
+async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction): # dodělat funkci
+
+    externalIdTypes = structureFunction()
