@@ -27,8 +27,7 @@ def singleCall(asyncFunc):
 #
 ###########################################################################################################################
 
-# zkratka a jmeno; dodělat funkci; eventGroups, eventUsers??
-# import nefunkční
+# zkratka a jmeno; Users??; dodělat funkci; eventGroups, eventUsers??
 
 @cache
 def DetermineEvents():
@@ -40,7 +39,7 @@ def DetermineEvents():
             'lastchange':'',
 
             'eventtype_id':'',
-            'location_id':'',
+            'facility_id':'', # ručně, cizí kliče musí existovat
         }
     ]
     return data
@@ -61,44 +60,90 @@ def DetermineEventTypes():
     ]
     return data
 
-@cache
-def DetermineFacilitys():
-    data = [
-        {'id': '812d1598-4771-4d38-a52b-4cfeff075488', 'name': 'KJB'},
-        {'id': '090d7268-9661-4594-99db-e70c3a187e2d', 'name': 'Sumavska'},
-        {'id': '0a5ce699-0763-4e6f-8278-9f19b73d50fd', 'name': 'Kounicova'},
-    ]
-
-@cache
-def DetermineGroups():
-    data = [
-        {'id': '4d71b800-d74c-4f02-9d4f-ef01ece884c5', 'name': '23-KB1'}, # zkratka, jmeno?
-        {'id': 'aa1b4f1e-42c2-48f9-a5ec-68aec05e529b', 'name': '23-KB-C'},
-        {'id': 'cb37641f-27df-46a9-800f-f7057260733a', 'name': '23-5BSV'},
-        {'id': '8becd27a-2793-455b-960e-e4964672e9f9', 'name': '23-5LTZ'},
-        {'id': '67bb9e0d-1b28-45ef-be19-05f6a10c320d', 'name': '23-5RLP'},
-        {'id': '649420bf-8dc1-4154-8055-688f1e696b05', 'name': '23-5ZM'},
-    ]
-
-@cache
-def DetermineUsers():
-    data = [
-
-    ]
-
-
-
 import asyncio
 async def predefineAllDataStructures(asyncSessionMaker):
-     asyncio.gather(
+     await asyncio.gather(
         putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, DetermineEvents),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, EventTypeModel, DetermineEventTypes),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, FacilityModel, DetermineFacilitys),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, GroupModel, DetermineGroups),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, UserModel, DetermineUsers),
+        #putPredefinedStructuresIntoTable(asyncSessionMaker, EventTypeModel, DetermineEventTypes),
         
      )
 
-async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction): # dodělat funkci
+async def PutDemodata(asyncSessionMaker):
+    await asyncio.gather(
+        #putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, DetermineEvents),
+        putPredefinedStructuresIntoTable(asyncSessionMaker, EventTypeModel, DetermineEventTypes),
+        
+    )
 
+async def putPredefinedStructuresIntoTable(asyncSessionMaker, DBModel, structureFunction):
+    """Zabezpeci prvotni inicicalizaci typu externích ids v databazi
+       DBModel zprostredkovava tabulku, je to sqlalchemy model
+       structureFunction() dava data, ktera maji byt ulozena
+    """
+    # ocekavane typy 
     externalIdTypes = structureFunction()
+    
+    #dotaz do databaze
+    stmt = select(DBModel)
+    async with asyncSessionMaker() as session:
+        dbSet = await session.execute(stmt)
+        dbRows = list(dbSet.scalars())
+    
+    #extrakce dat z vysledku dotazu
+    #vezmeme si jen atributy name a id, id je typu uuid, tak jej zkovertujeme na string
+    dbRowsDicts = [
+        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
+        ]
+
+    print(structureFunction, 'external id types found in database')
+    print(dbRowsDicts)
+
+    # vytahneme si vektor (list) id, ten pouzijeme pro operator in nize
+    idsInDatabase = [row['id'] for row in dbRowsDicts]
+
+    # zjistime, ktera id nejsou v databazi
+    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+    print(structureFunction, 'external id types not found in database')
+    print(unsavedRows)
+
+    # pro vsechna neulozena id vytvorime entity
+    rowsToAdd = [DBModel(**row) for row in unsavedRows]
+    print(rowsToAdd)
+    print(len(rowsToAdd))
+
+    # a vytvorene entity jednou operaci vlozime do databaze
+    async with asyncSessionMaker() as session:
+        async with session.begin():
+            session.add_all(rowsToAdd)
+        await session.commit()
+
+    # jeste jednou se dotazeme do databaze
+    stmt = select(DBModel)
+    async with asyncSessionMaker() as session:
+        dbSet = await session.execute(stmt)
+        dbRows = dbSet.scalars()
+    
+    #extrakce dat z vysledku dotazu
+    dbRowsDicts = [
+        {'name': row.name, 'id': f'{row.id}'} for row in dbRows
+        ]
+
+    print(structureFunction, 'found in database')
+    print(dbRowsDicts)
+
+    # znovu id, ktera jsou uz ulozena
+    idsInDatabase = [row['id'] for row in dbRowsDicts]
+
+    # znovu zaznamy, ktere dosud ulozeny nejsou, mely by byt ulozeny vsechny, takze prazdny list
+    unsavedRows = list(filter(lambda row: not(row['id'] in idsInDatabase), externalIdTypes))
+
+    # ted by melo byt pole prazdne
+    print(structureFunction, 'not found in database')
+    print(unsavedRows)
+    if not(len(unsavedRows) == 0):
+        print('SOMETHING is REALLY WRONG')
+
+    print(structureFunction, 'Defined in database')
+    # nyni vsechny entity mame v pameti a v databazi synchronizovane
+    print(structureFunction())
+    pass
