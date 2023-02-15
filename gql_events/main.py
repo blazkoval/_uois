@@ -6,6 +6,7 @@ import asyncio
 from fastapi import FastAPI
 import strawberry
 from strawberry.fastapi import GraphQLRouter
+from gql_events.DBFeeder import predefineAllDataStructures
 
 ## Definice GraphQL typu (pomoci strawberry https://strawberry.rocks/)
 ## Strawberry zvoleno kvuli moznosti mit federovane GraphQL API (https://strawberry.rocks/docs/guides/federation, https://www.apollographql.com/docs/federation/)
@@ -42,7 +43,10 @@ async def RunOnceAndReturnSessionMaker():
     result = await startEngine(connectionstring=connectionString, makeDrop=False, makeUp=True)
     
     print(f'initializing system structures')
-
+    
+    await predefineAllDataStructures(
+        asyncSessionMaker=result
+    )
     ###########################################################################################################################
     #
     # zde definujte do funkce asyncio.gather

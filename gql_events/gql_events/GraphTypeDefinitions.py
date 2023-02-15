@@ -4,6 +4,7 @@ import strawberry as strawberryA
 import uuid
 import datetime
 from contextlib import asynccontextmanager
+from gql_events.DBFeeder import PutDemodata
 
 """/\ 9"""
 @asynccontextmanager
@@ -257,7 +258,21 @@ class Query:
             result = await resolveEventTypePage(session,  skip, limit)
             return result
 
+<<<<<<< HEAD
     #event_by_facility - nejspis nebude potreba, pokud ano tak dodelat resolver
+=======
+    #gql_ug - GraphTypeDefinitions - 424
+
+    #zavolat rndm structure
+    @strawberryA.field(description="""Finds all events paged""")
+    async def load_event_data(self, info: strawberryA.types.Info,) -> str:
+        asyncSessionMaker = info.context['asyncSessionMaker']
+        result = await PutDemodata(asyncSessionMaker)
+        return 'ok'
+
+
+#event_by_facility - 
+>>>>>>> 8685975065e4c64b658a9c5d89b00a24964bd126
 
 ###########################################################################################################################
 #
