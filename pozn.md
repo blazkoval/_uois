@@ -123,10 +123,18 @@ print(result)
 
 http://apollo:3000/gql poslat request, da odpoved v jsonu
 
-
-dodelat dbfeeder
-
 # po konzultaci
 ![GraphiQL - proč je tam group_id?](gql_events/gql_events/Graphiql.png)
 dosavadní postup ověřen přes pgadmin a GraphiQL - vše funkční
+
+# TO DO:
+DBFeeder
+gql editory (mutace)
+external_id
+-	K primary key (ID) vždy přidružte external_id (indexed)
+-	Primary key je typu UUID, external_id je string
+docker image (na docker hub)
+vygenerovaná dokumantace
+příběh
+
 

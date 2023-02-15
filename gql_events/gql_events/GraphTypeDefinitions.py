@@ -257,10 +257,7 @@ class Query:
             result = await resolveEventTypePage(session,  skip, limit)
             return result
 
-    #gql_ug - GraphTypeDefinitions - 424
-
-
-#event_by_facility - 
+    #event_by_facility - nejspis nebude potreba, pokud ano tak dodelat resolver
 
 ###########################################################################################################################
 #
