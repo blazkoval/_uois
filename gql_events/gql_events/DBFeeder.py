@@ -1,7 +1,6 @@
 from doctest import master
 from functools import cache
-from gql_workflow.DBDefinitions import BaseModel, EventTypeModel, EventModel, UserModel, GroupModel, FacilityModel
-
+from gql_events.DBDefinitions import BaseModel, EventTypeModel, EventModel
 import random
 import itertools
 from functools import cache
