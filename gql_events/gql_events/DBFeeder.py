@@ -34,7 +34,7 @@ def singleCall(asyncFunc):
 def DetermineEvents():
     data = [
         {'id':'73dda931-1629-4193-963a-c55397b0a706','name':'Matematika',
-            'start': time(8, 0), 'end': time(9, 30)
+            'start': time(8, 0), 'end': time(9, 30),
             'capacity':'40',
             'comment':'Linearni Funkce',
             'lastchange': datetime.date.today(),
