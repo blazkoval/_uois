@@ -33,13 +33,13 @@ def singleCall(asyncFunc):
 def DetermineEvents():
     data = [
         {'id':'73dda931-1629-4193-963a-c55397b0a706','name':'Matematika',
-            'start': time(8, 0), 'end': time(9, 30),
-            'capacity':'40',
+            'start': datetime.datetime(2023, 1, 1, 8, 0), 'end': datetime.datetime(2023, 1, 1, 9, 30), #opravit na datetime
+            'capacity': 40,
             'comment':'Linearni Funkce',
             'lastchange': datetime.date.today(),
 
             'eventtype_id':'c9a55358-e1c0-4873-abea-43a72516e282',
-            'facility_id':'', # ručně, cizí kliče musí existovat
+            'facility_id':'af170ad7-c32d-430e-9df8-fa03ffb6397d', # ručně, cizí kliče musí existovat
         }
     ]
     return data
@@ -63,7 +63,6 @@ def DetermineEventTypes():
 import asyncio
 async def predefineAllDataStructures(asyncSessionMaker):
      await asyncio.gather(
-        putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, DetermineEvents),
         putPredefinedStructuresIntoTable(asyncSessionMaker, EventTypeModel, DetermineEventTypes),
         
      )
@@ -71,7 +70,6 @@ async def predefineAllDataStructures(asyncSessionMaker):
 async def PutDemodata(asyncSessionMaker):
     await asyncio.gather(
         putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, DetermineEvents),
-        putPredefinedStructuresIntoTable(asyncSessionMaker, EventTypeModel, DetermineEventTypes),
         
     )
 
