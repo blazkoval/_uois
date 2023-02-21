@@ -6,6 +6,7 @@ import random
 import itertools
 from functools import cache
 import datetime
+from datetime import time
 
 
 from sqlalchemy.future import select
@@ -33,10 +34,10 @@ def singleCall(asyncFunc):
 def DetermineEvents():
     data = [
         {'id':'73dda931-1629-4193-963a-c55397b0a706','name':'Matematika',
-            'start': datetime.datetime(), 'end': datetime.datetime() + datetime.timedelta(hours=1,minutes=30),
+            'start': time(8, 0), 'end': time(9, 30)
             'capacity':'40',
             'comment':'Linearni Funkce',
-            'lastchange':'',
+            'lastchange': datetime.date.today(),
 
             'eventtype_id':'c9a55358-e1c0-4873-abea-43a72516e282',
             'facility_id':'', # ručně, cizí kliče musí existovat
