@@ -258,6 +258,9 @@ class Query:
             result = await resolveEventTypePage(session,  skip, limit)
             return result
 
+<<<<<<< HEAD
+    #event_by_facility - nejspis nebude potreba, pokud ano tak dodelat resolver
+=======
     #gql_ug - GraphTypeDefinitions - 424
 
     #zavolat rndm structure
@@ -269,6 +272,7 @@ class Query:
 
 
 #event_by_facility - 
+>>>>>>> 8685975065e4c64b658a9c5d89b00a24964bd126
 
 ###########################################################################################################################
 #

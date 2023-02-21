@@ -19,6 +19,9 @@ services:
     image: apollo
     build:
       context: ./apollo
+    environment: 
+      # promenne, ktere lze cist v kontejneru
+      - PORT=3000
     depends_on:
       # kontejnery, ktere musi byt spusteny drive
       - gql_ug
