@@ -27,13 +27,13 @@ def singleCall(asyncFunc):
 #
 ###########################################################################################################################
 
-# zkratka a jmeno; Users??; dodělat funkci; eventGroups, eventUsers??
+
 
 @cache
 def DetermineEvents():
     data = [
         {'id':'73dda931-1629-4193-963a-c55397b0a706','name':'Matematika',
-            'start': datetime.datetime(2023, 1, 1, 8, 0), 'end': datetime.datetime(2023, 1, 1, 9, 30), #opravit na datetime
+            'start': datetime.datetime(2023, 1, 1, 8, 0), 'end': datetime.datetime(2023, 1, 1, 9, 30),
             'capacity': 40,
             'comment':'Linearni Funkce',
             'lastchange': datetime.date.today(),
