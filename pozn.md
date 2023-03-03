@@ -135,6 +135,6 @@ external_id
 -	Primary key je typu UUID, external_id je string
 docker image (na docker hub)
 vygenerovaná dokumantace
-příběh
+příběh, deník
 
 
