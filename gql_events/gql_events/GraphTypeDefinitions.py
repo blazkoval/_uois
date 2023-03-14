@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional
 import typing
 import strawberry as strawberryA
 import uuid
@@ -28,8 +28,6 @@ def AsyncSessionFromInfo(info):
 # - rozsirene, ktere existuji nekde jinde a vy jim pridavate dalsi atributy
 #
 ###########################################################################################################################
-
-
 
 
 from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent, resolveFacilityForEvent 
@@ -72,6 +70,10 @@ class EventGQLModel:
     def lastchange(self) -> Union[datetime.datetime,None]:
         return self.lastchange
     
+    @strawberryA.field(description="""is the membership is still valid""")
+    async def valid(self) -> Union[bool, None]:
+        return self.valid
+    
     @strawberryA.field(description="""Event's type (like Zkouška)""")
     async def eventtype(self, info: strawberryA.types.Info) -> Union['EventTypeGQLModel', None]:
         async with withInfo(info) as session:
@@ -113,6 +115,10 @@ class EventGQLModel:
             result = list(map(lambda item: item.group, links))
             print('event.group', result)
             return result
+        
+    @strawberryA.field(description="""Returns the project editor""")
+    async def editor(self, info: strawberryA.types.Info) -> Union['EventEditorGQLModel', None]:
+        return self 
     
 from gql_events.GraphResolvers import resolveEventTypeById, resolveEventForEventType
 @strawberryA.federation.type(keys=["id"], description="")
@@ -156,6 +162,7 @@ class FacilityGQLModel:
     @strawberryA.field(description="""name""")
     def name(self) -> Union[str, None]:
         return self.name
+    
 """ /\ 29"""
 from gql_events.GraphResolvers import resolveEventsForOrganizer, resolveEventsForParticipant
 @strawberryA.federation.type(extend=True, keys=["id"])
@@ -168,12 +175,13 @@ class UserGQLModel:
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""Events O""")
-    async def events(self, info: strawberryA.types.Info, startdate: datetime.datetime = None, enddate: datetime.datetime = None) -> List['EventGQLModel']:
+    async def events_o(self, info: strawberryA.types.Info, startdate: datetime.datetime = None, enddate: datetime.datetime = None) -> List['EventGQLModel']:
         async with withInfo(info) as session:
             result = await resolveEventsForOrganizer(session,  self.id, startdate, enddate)
             return result
+        
     @strawberryA.field(description="""Events P""")
-    async def events(self, info: strawberryA.types.Info, startdate: datetime.datetime = None, enddate: datetime.datetime = None) -> List['EventGQLModel']:
+    async def events_p(self, info: strawberryA.types.Info, startdate: datetime.datetime = None, enddate: datetime.datetime = None) -> List['EventGQLModel']:
         async with withInfo(info) as session:
             result = await resolveEventsForParticipant(session,  self.id, startdate, enddate)
             return result
@@ -197,6 +205,134 @@ class GroupGQLModel:
             
 """ \/ 60"""
 
+
+###########################################################################################################################
+# 
+#                                       GQL EDITORY
+#                                       
+###################################################################################################################
+# 
+# gql_ug -> GTD -> 388
+# podle gql_ug > GTD
+#
+# vytvorit editor EventEditorGQLModel, navazat na entitu 
+#     resolve_reference zkopirovat i s ID
+#     pridat atributy ID a result
+#     update zkopirovat krom Modelu a resolverUpdate...
+#     pridat metody update, insert atd.
+#     jestlize je lastchange, tak...?
+
+#     Editor bude jen jeden
+from gql_events.GraphResolvers import resolveUpdateEvent, resolveRemoveEvent
+@strawberryA.input(description="""Entity representing a project update""")
+class EventUpdateGQLModel:
+    lastchange: datetime.datetime
+    name: Optional[str] = None
+    start: Optional[datetime.datetime] = None
+    end: Optional[datetime.datetime] = None
+    capacity: Optional[int] = None
+    comment: Optional[str] = None
+    #eventtype_id:  Optional[uuid.UUID] = None
+    #facility_id: Optional[uuid.UUID] = None
+    # participants ? - specificke metody v editoru - add a remove
+    # organizers ?
+
+@strawberryA.input
+class EventInsertGQLModel:
+    id: Optional[strawberryA.ID] = None
+    name: Optional[str] = None
+    start: Optional[datetime.datetime] = None
+    end: Optional[datetime.datetime] = None
+    capacity: Optional[int] = None
+    comment: Optional[str] = None
+
+from gql_events.GraphResolvers import resolveUpdateEvent, resolveInsertEvent
+@strawberryA.federation.type(keys=["id"], description="""Entity representing an editable event""")
+class EventEditorGQLModel:
+    id: strawberryA.ID = None
+    result: str = None
+
+    @classmethod
+    async def resolve_reference(cls, info: strawberryA.types.Info, id: strawberryA.ID):
+        # result = await resolveGroupById(session,  id)
+        async with withInfo(info) as session:
+            result = await resolveEventById(session, id)
+            result._type_definition = cls._type_definition  # little hack :)
+            return result
+   
+    @strawberryA.field(description="""Entity primary key""")
+    def id(self) -> strawberryA.ID:
+        return self.id
+
+    @strawberryA.field(description="""Result status of update operation""")
+    def result(self) -> str:
+        return self.result
+    
+    @strawberryA.field(description="""Link to the event.""")
+    async def event(self, info: strawberryA.types.Info) -> EventGQLModel:
+        # result = await resolveEventById(session,  self.id)
+        async with withInfo(info) as session:
+            result = await resolveEventById(session, self.id)
+            return result
+
+    @strawberryA.field(description="""Updates event data""")
+    async def update(self, info: strawberryA.types.Info, data: EventUpdateGQLModel) -> 'EventEditorGQLModel':
+        lastchange = data.lastchange    
+        async with withInfo(info) as session:
+            await resolveUpdateEvent(session, id=self.id, data=data)
+            if lastchange == data.lastchange:
+                # no change
+                resultMsg = "fail"
+            else:
+                resultMsg = "ok"
+            result = EventEditorGQLModel()
+            result.id = self.id
+            result.result = resultMsg
+            return result
+    
+    @strawberryA.field(description="""Invalidate event""")
+    async def invalidate_event(self, info: strawberryA.types.Info) -> 'EventGQLModel':
+        async with withInfo(info) as session:
+            event = await resolveEventById(session, self.id)
+            event.valid = False
+            await session.commit()
+            return event
+        
+    @strawberryA.field(description="""Remove event""")
+    async def remove_event(self, info: strawberryA.types.Info) -> str:
+        async with withInfo(info) as session:
+            result = await resolveRemoveEvent(session, self.id)
+            return result
+        
+    @strawberryA.field(description="""Create a new event""")
+    async def create_event(
+        self, info: strawberryA.types.Info, event: EventInsertGQLModel
+    ) -> "GroupGQLModel":
+        # newGroup = await resolveInsertGroup(session,  group, extraAttributes={'mastergroup_id': self.id})
+        async with withInfo(info) as session:
+            newEvent = await resolveInsertEvent(
+                session, event, extraAttributes={"masterevent_id": self.id}
+            )
+            print(newEvent)
+            return newEvent
+        
+    
+
+    # # insert ????????????
+    # @strawberryA.field(description="""Create a new event""")
+    # async def add_eventtype(self, info: strawberryA.types.Info, user_id: strawberryA.ID) -> "EventTypeGQLModel":
+    #     # result = await resolveInsertEvent(session,  None,
+    #     #    extraAttributes={'user_id': user_id, 'group_id': self.id})
+    #     async with withInfo(info) as session:
+    #         result = await resolveInsertEvent(session, None, extraAttributes={"user_id": user_id, "group_id": self.id})
+    #         return result   
+    
+    # # remove - pridat resolver
+    # @strawberryA.field(description="""Remove eventtype""")
+    # async def remove_eventtype(self, info: strawberryA.types.Info, finance_id: uuid.UUID) -> str:
+    #     async with withInfo(info) as session:
+    #         result = await resolveRemoveEventType(session, self.id, finance_id)
+    #         return result
 
 ###########################################################################################################################
 #
@@ -265,7 +401,8 @@ class Query:
     async def load_event_data(self, info: strawberryA.types.Info,) -> str:
         asyncSessionMaker = info.context['asyncSessionMaker']
         result = await PutDemodata(asyncSessionMaker)
-        return 'ok'
+        return 'ok'        
+
 ###########################################################################################################################
 #
 # Schema je pouzito v main.py, vsimnete si parametru types, obsahuje vyjmenovane modely. Bez explicitniho vyjmenovani
