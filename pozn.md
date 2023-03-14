@@ -128,7 +128,7 @@ http://apollo:3000/gql poslat request, da odpoved v jsonu
 dosavadní postup ověřen přes pgadmin a GraphiQL - vše funkční
 
 # TO DO:
-DBFeeder
+
 gql editory (mutace)
 external_id
 -	K primary key (ID) vždy přidružte external_id (indexed)
@@ -136,5 +136,86 @@ external_id
 docker image (na docker hub)
 vygenerovaná dokumantace
 příběh, deník
+prezentace:
+- integrace do uois?
+- jupyter
+
+# 4.3.
+v DBFeeder - řádek 42 -> odkomentovat facility
+
+podle gql_ug > GTD
+vytvorit editor EventEditorGQLModel, navazat na entitu 
+    resolve_reference zkopirovat i s ID
+    pridat atributy ID a result
+    update zkopirovat krom Modelu a resolverUpdate...
+    pridat metody update, insert atd.
+    jestlize je lastchange, tak...?
+
+    Editor bude jen jeden
 
 
+# v GraphTypeDefinitions:
+
+EventGQLModel
++ resolve_references
++ atributy z SQL
++ editor ...z EventEditorGQLModel - spusti editor v rozhrani
+
+EventTypeGQLModel
++ resolvereferences
++ atributy z SQL
+
+UserGQLModel
++ id ...z UserGQLModel
++ resolve_references
++ events a events
+
+FacilityGQLModel ??
+
+# jak na editory
+
+EventUpdateGQLModel - zakladni polozky v tabulce
++ atributy:
+    name: Optional[str] = None
+    ...
+    participant, organizer - specificke metody v EditorGQL - add a invalidate
+
+EventEditorGQLModel ??
++ atributy:
+    id X
+    result X
++ metody:
+    resolve_refenrece X
+    event ...z EventGQLModel X
+    update ...z EventUpdateGQLModel - prijima dat. strukturu, ktera meni event
+    invalidate - misto remove - zneplatni polozku
+
+    add_organizer
+        user_id - jediny parametr
+    add_participant
+        user_id
+
+    remove - musi byt ke kazdemu add (sql alchemy delete row - pro resolver) pouziva se misto nej invalidate
+
+    invalidate - musi se pridat atribut valid do modelu
+
+
+
+EventTypeUpdateGQLModel - ne
+
+EventTypeEditorGQLModel - ne
+
+
+delete:
+session.query(EventModel).filter(EventModel.id).delete()
+session.commit()
+
+async def putSingleEntityToDb(session, entity):
+    async with session.begin():
+        session.add(entity)
+    await session.commit()
+    return entity
+
+
+# co ted?
+pridat add a remove (popr invalidate) pro organizer a participant
