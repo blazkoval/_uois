@@ -2,6 +2,7 @@
 from ast import Call
 from typing import Coroutine, Callable, Awaitable, Union, List
 import uuid
+from sqlalchemy import delete
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -35,6 +36,22 @@ resolveEventPage = createEntityGetter(EventModel)
 resolveEventAll = createEntityGetter(EventModel)
 resolveUpdateEvent = createUpdateResolver(EventModel)
 resolveInsertEvent = createInsertResolver(EventModel)
+
+async def resolveRemoveEvent(session, event_id):
+    stmt = delete(EventModel).where(EventModel.id==event_id)
+    resultMsg= ""
+    try:
+        response = await session.execute(stmt)
+        await session.commit()
+        if(response.rowcount == 1):
+            resultMsg = "ok"
+        else:
+            resultMsg = "fail"
+        
+    except:
+        resultMsg="error"
+  
+    return resultMsg
 
 resolveFacilityForEvent = create1NGetter(FacilityModel, foreignKeyName='event_id')
 resolveOrganizersForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
