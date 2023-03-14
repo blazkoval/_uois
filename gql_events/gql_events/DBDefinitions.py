@@ -78,9 +78,11 @@ class EventModel(BaseModel):
     capacity = Column(Integer)
     comment = Column(String)
     lastchange = Column(DateTime, default=datetime.datetime.now)
+    valid = Column(Boolean, default=True)
     #lastchange = Column(DateTime, server_default=sqlalchemy.sql.func.mow())
     eventtype_id = Column(ForeignKey('eventtypes.id'))
     facility_id = Column(ForeignKey('facilities.id'))
+
     
     eventtype = relationship('EventTypeModel', back_populates='events')
     facility = relationship('FacilityModel', back_populates='events')
@@ -91,6 +93,7 @@ class EventTypeModel(BaseModel):
     __tablename__ = 'eventtypes'
     id = UUIDColumn()
     name = Column(String)
+    valid = Column(Boolean, default=True)
 
     events = relationship('EventModel', back_populates='eventtype')
 
