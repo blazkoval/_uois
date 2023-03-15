@@ -29,7 +29,7 @@ pg admin:
     hostname, postgres všude
 
 
-Projetkotvy den
+# 1. Projetkotvy den - cile
 kde je adresar, ukazat commit
 
 Struktura graphql slozena z vice vsrtev
@@ -232,3 +232,5 @@ facility v gql nefunguje
 "Entity namespace for \"facilities\" has no property \"event_id\""
 - spatne definovany v EventGQLModel ?
 -> opraveno v EventGQL, smazano id z FacilityGQL
+
+jdeme na add_organizer:
