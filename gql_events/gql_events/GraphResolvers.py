@@ -95,10 +95,10 @@ async def resolveEventsForOrganizer(session, id, startdate=None, enddate=None):
     if enddate is not None:
         statement = statement.filter(EventModel.end <= enddate)
     statement = statement.filter(EventOrganizerModel.user_id == id)
-
     response = await session.execute(statement)
     result = response.scalars()
     return result
+
 async def resolveEventsForParticipant(session, id, startdate=None, enddate=None):
     statement = select(EventModel).join(EventParticipantModel)
     if startdate is not None:
@@ -106,8 +106,8 @@ async def resolveEventsForParticipant(session, id, startdate=None, enddate=None)
     if enddate is not None:
         statement = statement.filter(EventModel.end <= enddate)
     statement = statement.filter(EventParticipantModel.user_id == id)
-
     response = await session.execute(statement)
     result = response.scalars()
     return result
       
+resolveInsertOrganizer = createInsertResolver(UserModel)
