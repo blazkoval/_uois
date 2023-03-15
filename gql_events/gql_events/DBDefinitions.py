@@ -11,6 +11,13 @@ from sqlalchemy.ext.declarative import declarative_base
 BaseModel = declarative_base()
 
 def UUIDColumn(name=None):
+    """
+    It creates a column with a UUID data type, and sets it as the primary key, and sets the default
+    value to a random UUID
+    
+    :param name: The name of the column
+    :return: A Column object with the following properties:
+    """
     if name is None:
         return Column(UUID(as_uuid=True), primary_key=True, server_default=sqlalchemy.text("gen_random_uuid()"), unique=True)
     else:
@@ -166,7 +173,7 @@ class UserModel(BaseModel):
     # Creating a one-to-many relationship between the UserModel and EventParticipantModel classes.
     events_p = relationship('EventParticipantModel', back_populates='user')
     events_o = relationship('EventOrganizerModel', back_populates='user')
-    
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
