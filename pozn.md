@@ -219,3 +219,16 @@ async def putSingleEntityToDb(session, entity):
 
 # co ted?
 pridat add a remove (popr invalidate) pro organizer a participant
+
+# po konzultaci 15.03.
+resolveInsertOrganizer = createInsertResolver(UserModel)
+- nahradit za resolveInsertOrganizer = createInsertResolver(EventOrganizerModel)
+- pri pridavani organizer musi uuid existovat v tabulce "users"
+
+mozna bude potreba zmena v async def organizers -> result = ...
+
+# a dal
+facility v gql nefunguje
+"Entity namespace for \"facilities\" has no property \"event_id\""
+- spatne definovany v EventGQLModel ?
+-> opraveno v EventGQL, smazano id z FacilityGQL
