@@ -195,7 +195,7 @@ class EventGQLModel:
             print('event.group', result)
             return result
         
-    @strawberryA.field(description="""Returns the project editor""")
+    @strawberryA.field(description="""Returns the event's editor""")
     async def editor(self, info: strawberryA.types.Info) -> Union['EventEditorGQLModel', None]:
         """
         It returns the object itself.
@@ -397,18 +397,7 @@ class GroupGQLModel:
 #                                       GQL EDITORY
 #                                       
 ###################################################################################################################
-# 
-# gql_ug -> GTD -> 388
-# podle gql_ug > GTD
-#
-# vytvorit editor EventEditorGQLModel, navazat na entitu 
-#     resolve_reference zkopirovat i s ID
-#     pridat atributy ID a result
-#     update zkopirovat krom Modelu a resolverUpdate...
-#     pridat metody update, insert atd.
-#     jestlize je lastchange, tak...?
 
-#     Editor bude jen jeden
 from gql_events.GraphResolvers import resolveUpdateEvent, resolveRemoveEvent
 @strawberryA.input(description="""Entity representing a project update""")
 # > This class is used to update an event
@@ -603,22 +592,6 @@ class EventEditorGQLModel:
     #             },
     #         )
     #     return await UserGQLModel.resolve_reference(info, id=result.id)
-
-    # # insert ????????????
-    # @strawberryA.field(description="""Create a new event""")
-    # async def add_eventtype(self, info: strawberryA.types.Info, user_id: strawberryA.ID) -> "EventTypeGQLModel":
-    #     # result = await resolveInsertEvent(session,  None,
-    #     #    extraAttributes={'user_id': user_id, 'group_id': self.id})
-    #     async with withInfo(info) as session:
-    #         result = await resolveInsertEvent(session, None, extraAttributes={"user_id": user_id, "group_id": self.id})
-    #         return result   
-    
-    # # remove - pridat resolver
-    # @strawberryA.field(description="""Remove eventtype""")
-    # async def remove_eventtype(self, info: strawberryA.types.Info, finance_id: uuid.UUID) -> str:
-    #     async with withInfo(info) as session:
-    #         result = await resolveRemoveEventType(session, self.id, finance_id)
-    #         return result
 
 ###########################################################################################################################
 #
