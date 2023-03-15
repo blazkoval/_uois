@@ -30,7 +30,7 @@ def AsyncSessionFromInfo(info):
 ###########################################################################################################################
 
 
-from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent, resolveFacilityForEvent 
+from gql_events.GraphResolvers import resolveEventById, resolveOrganizersForEvent, resolveParticipantsForEvent, resolveGroupsForEvent
 @strawberryA.federation.type(keys=["id"], description="")
 # It's a GraphQL model for the Event class
 class EventGQLModel:
@@ -134,21 +134,25 @@ class EventGQLModel:
                 #result = resolveEventTypeById(session,  self.grouptype_id)
                 result = await resolveEventTypeById(session, self.eventtype_id)
                 return result   
+   
+    @strawberryA.field(description="""facility, related to a event""")
+    async def facility(self) -> 'FacilityGQLModel':
+        return FacilityGQLModel(id=self.facility_id)
 
-    @strawberryA.field(description="""Facility (like K44/175)""")
-    async def facility(self, info: strawberryA.types.Info) -> Union['FacilityGQLModel', None]:
-        """
-        It returns a list of FacilityGQLModel objects
+    # @strawberryA.field(description="""Facility (like K44/175)""")
+    # async def facility(self, info: strawberryA.types.Info) -> Union['FacilityGQLModel', None]:
+    #     """
+    #     It returns a list of FacilityGQLModel objects
         
-        :param info: strawberryA.types.Info
-        :type info: strawberryA.types.Info
-        :return: A list of FacilityGQLModel objects.
-        """
-        async with withInfo(info) as session:
-            links = await resolveFacilityForEvent(session,  self.id)
-            result = list(map(lambda item: item.group, links))
-            print('event.facility', result)
-            return result
+    #     :param info: strawberryA.types.Info
+    #     :type info: strawberryA.types.Info
+    #     :return: A list of FacilityGQLModel objects.
+    #     """
+    #     async with withInfo(info) as session:            
+    #         links = await resolveFacilityForEvent(session,  self.id)
+    #         result = list(map(lambda item: item.group, links))
+    #         print('event.facility', result)
+    #         return result
 
     @strawberryA.field(description="""Participants of the event""")
     async def participants(self, info: strawberryA.types.Info) -> List['UserGQLModel']:
@@ -176,7 +180,8 @@ class EventGQLModel:
         """
         async with withInfo(info) as session:
             links = await resolveOrganizersForEvent(session,  self.id)
-            result = list(map(lambda item: item.user, links))
+            result = list(map(lambda item: item.user, links)) 
+            #result = list(map(lambda item: UserGQLModel.resolve_reference(info, item.user_id))) #nelze číst
             print('event.orgs', result)
             return result
 
@@ -280,23 +285,14 @@ class FacilityGQLModel:
         """
         return FacilityGQLModel(id=id)
         
-    @strawberryA.field(description="""primary key""")
-    def id(self) -> strawberryA.ID:
-        """
-        It returns the id of the object.
-        :return: The id of the user
-        """
-        return self.id
-    
-    @strawberryA.field(description="""name""")
-    def name(self) -> Union[str, None]:
-        """
-        This function returns the name of the person
-        :return: The name of the person
-        """
-        return self.name
-    
-""" /\ 29"""
+    # @strawberryA.field(description="""primary key""")
+    # def id(self) -> strawberryA.ID:
+    #     """
+    #     It returns the id of the object.
+    #     :return: The id of the user
+    #     """
+    #     return self.id
+
 from gql_events.GraphResolvers import resolveEventsForOrganizer, resolveEventsForParticipant
 @strawberryA.federation.type(extend=True, keys=["id"])
 # The class is a GQL model for a user. It has two fields, events_o and events_p, which return lists of
@@ -388,8 +384,6 @@ class GroupGQLModel:
         async with withInfo(info) as session:
             result = await resolveEventsForGroup(session,  self.id, startdate, enddate)
             return result
-            
-""" \/ 60"""
 
 
 ###########################################################################################################################
@@ -408,10 +402,8 @@ class EventUpdateGQLModel:
     end: Optional[datetime.datetime] = None
     capacity: Optional[int] = None
     comment: Optional[str] = None
-    #eventtype_id:  Optional[uuid.UUID] = None
-    #facility_id: Optional[uuid.UUID] = None
-    # participants ? - specificke metody v editoru - add a remove
-    # organizers ?
+    eventtype_id:  Optional[uuid.UUID] = None
+    facility_id: Optional[uuid.UUID] = None
 
 @strawberryA.input
 # This class is used to create a new event
@@ -422,8 +414,9 @@ class EventInsertGQLModel:
     end: Optional[datetime.datetime] = None
     capacity: Optional[int] = None
     comment: Optional[str] = None
+    eventtype_id:  Optional[uuid.UUID] = None
 
-from gql_events.GraphResolvers import resolveUpdateEvent, resolveInsertEvent, resolveInsertOrganizer
+from gql_events.GraphResolvers import resolveUpdateEvent, resolveInsertEvent, resolveInsertOrganizer, resolveInsertParticipant
 @strawberryA.federation.type(keys=["id"], description="""Entity representing an editable event""")
 # The class is a wrapper around the event model. It provides a set of methods to manipulate the event
 # model
@@ -571,27 +564,28 @@ class EventEditorGQLModel:
         :return: The result of the resolveInsertOrganizer function.
         """
         async with withInfo(info) as session:
-            result = await resolveInsertOrganizer(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
-            return result 
+            await resolveInsertOrganizer(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
+            return UserGQLModel.resolve_reference(info, id=user_id) 
+            # proc vracim useraGQL ? 
+            # vracim true nebo false - user_id = ? ... jesrlize existuje vratim false, jestlize neexistuje vracim true
+   
+    @strawberryA.field(description="""Create new participants""")
+    async def add_participant(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
+        """
+        It takes a user_id and an event_id and inserts a new row into the participantss table with those
+        values
         
-    # @strawberryA.field(description="""Create a new organizer""")
-    # async def add_organizer(
-    #     self,
-    #     info: strawberryA.types.Info,
-    #     user_id: strawberryA.ID,
-    # ) -> "UserGQLModel":
-    #     # result = await resolveInsertRole(session,  None,
-    #     #    extraAttributes={'user_id': user_id, 'group_id': self.id, 'roletype_id': roletype_id})
-    #     async with withInfo(info) as session:
-    #         result = await resolveInsertOrganizer(
-    #             session,
-    #             None,
-    #             extraAttributes={
-    #                 "user_id": user_id,
-    #                 "event_id": self.id,
-    #             },
-    #         )
-    #     return await UserGQLModel.resolve_reference(info, id=result.id)
+        :param info: strawberryA.types.Info
+        :type info: strawberryA.types.Info
+        :param user_id: uuid.UUID
+        :type user_id: uuid.UUID
+        :return: The result of the resolveInsertParticipant function.
+        """
+        async with withInfo(info) as session:
+            await resolveInsertParticipant(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
+            return UserGQLModel.resolve_reference(info, id=user_id)
+
+ 
 
 ###########################################################################################################################
 #

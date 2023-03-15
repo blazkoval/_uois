@@ -226,6 +226,8 @@ resolveInsertOrganizer = createInsertResolver(UserModel)
 - pri pridavani organizer musi uuid existovat v tabulce "users"
 
 mozna bude potreba zmena v async def organizers -> result = ...
+- > po teto zmene nelze cist uzivatele
+
 
 # a dal
 facility v gql nefunguje
@@ -234,3 +236,6 @@ facility v gql nefunguje
 -> opraveno v EventGQL, smazano id z FacilityGQL
 
 jdeme na add_organizer:
+- po upravach po konzultaci, vše funguje jak má, do pg adminu se změny propíší, ale z nějakého důvodu to háže error v graphiql
+
+add_participants

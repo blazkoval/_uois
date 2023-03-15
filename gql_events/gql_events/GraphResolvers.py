@@ -62,7 +62,7 @@ async def resolveRemoveEvent(session, event_id):
 
 # Creating a resolver for the event model.
 resolveOrganizersForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
-resolveParticipantsForEvent = create1NGetter(EventOrganizerModel, foreignKeyName='event_id', options=joinedload(EventOrganizerModel.user))
+resolveParticipantsForEvent = create1NGetter(EventParticipantModel, foreignKeyName='event_id', options=joinedload(EventParticipantModel.user))
 resolveGroupsForEvent = create1NGetter(EventGroupModel, foreignKeyName='event_id', options=joinedload(EventGroupModel.group))
 
 # eventtype resolvers
@@ -148,3 +148,4 @@ async def resolveEventsForParticipant(session, id, startdate=None, enddate=None)
     return result
             
 resolveInsertOrganizer = createInsertResolver(EventOrganizerModel)
+resolveInsertParticipant = createInsertResolver(EventParticipantModel)
