@@ -16,7 +16,7 @@ RUN python -m pip install -r requirements.txt
 WORKDIR /app
 COPY . /app
 
-FROM prepare as tester
+FROM prepare as testerh
 RUN python -m unittest tests/*
 
 FROM prepare as runner

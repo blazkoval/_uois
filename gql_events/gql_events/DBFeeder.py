@@ -31,6 +31,10 @@ def singleCall(asyncFunc):
 
 @cache
 def DetermineEvents():
+    """
+    It returns a list of dictionaries, each dictionary representing an event
+    :return: A list of dictionaries.
+    """
     data = [
         {'id':'73dda931-1629-4193-963a-c55397b0a706','name':'Matematika',
             'start': datetime.datetime(2023, 1, 1, 8, 0), 'end': datetime.datetime(2023, 1, 1, 9, 30),
@@ -46,6 +50,10 @@ def DetermineEvents():
 
 @cache
 def DetermineEventTypes():
+    """
+    It returns a list of dictionaries
+    :return: A list of dictionaries.
+    """
     data = [
         {'id': '794b4c17-6fde-4a84-bea0-bddbb0632ec4', 'name': 'Cviceni'},
         {'id': 'c9a55358-e1c0-4873-abea-43a72516e282', 'name': 'Prednaska'},
@@ -62,12 +70,19 @@ def DetermineEventTypes():
 
 import asyncio
 async def predefineAllDataStructures(asyncSessionMaker):
-     await asyncio.gather(
+    """
+    It takes a session maker and a model and a list of tuples and inserts the tuples into the table.
+    
+    :param asyncSessionMaker: a function that returns a session object
+    """
+    await asyncio.gather(
         putPredefinedStructuresIntoTable(asyncSessionMaker, EventTypeModel, DetermineEventTypes),
         
      )
 
 async def PutDemodata(asyncSessionMaker):
+    # Calling the function `putPredefinedStructuresIntoTable` with the arguments `asyncSessionMaker`,
+    # `EventModel`, and `DetermineEvents`.
     await asyncio.gather(
         putPredefinedStructuresIntoTable(asyncSessionMaker, EventModel, DetermineEvents),
         

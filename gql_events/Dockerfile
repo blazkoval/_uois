@@ -16,11 +16,11 @@ RUN python -m pip install -r requirements.txt
 WORKDIR /app
 COPY . /app
 
-# FROM prepare as tester
-RUN python -m pip install coverage
-# RUN python -m unittest tests/*
-RUN python -m coverage run -m unittest -v tests/*
-RUN python -m coverage report
+FROM prepare as tester
+#RUN python -m pip install coverage
+RUN python -m unittest tests/*
+#RUN python -m coverage run -m unittest -v tests/*
+#RUN python -m coverage report
 
 FROM prepare as runner
 # Creates a non-root user and adds permission to access the /app folder
