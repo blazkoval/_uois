@@ -246,7 +246,7 @@ class EventInsertGQLModel:
     capacity: Optional[int] = None
     comment: Optional[str] = None
 
-from gql_events.GraphResolvers import resolveUpdateEvent, resolveInsertEvent
+from gql_events.GraphResolvers import resolveUpdateEvent, resolveInsertEvent, resolveInsertOrganizer
 @strawberryA.federation.type(keys=["id"], description="""Entity representing an editable event""")
 class EventEditorGQLModel:
     id: strawberryA.ID = None
@@ -316,7 +316,30 @@ class EventEditorGQLModel:
             print(newEvent)
             return newEvent
         
-    
+    @strawberryA.field(description="""Create new organizer""")
+    async def add_organizer(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
+        async with withInfo(info) as session:
+            result = await resolveInsertOrganizer(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
+            return result 
+        
+    # @strawberryA.field(description="""Create a new organizer""")
+    # async def add_organizer(
+    #     self,
+    #     info: strawberryA.types.Info,
+    #     user_id: strawberryA.ID,
+    # ) -> "UserGQLModel":
+    #     # result = await resolveInsertRole(session,  None,
+    #     #    extraAttributes={'user_id': user_id, 'group_id': self.id, 'roletype_id': roletype_id})
+    #     async with withInfo(info) as session:
+    #         result = await resolveInsertOrganizer(
+    #             session,
+    #             None,
+    #             extraAttributes={
+    #                 "user_id": user_id,
+    #                 "event_id": self.id,
+    #             },
+    #         )
+    #     return await UserGQLModel.resolve_reference(info, id=result.id)
 
     # # insert ????????????
     # @strawberryA.field(description="""Create a new event""")
