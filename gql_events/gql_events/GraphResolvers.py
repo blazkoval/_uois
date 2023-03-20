@@ -149,3 +149,49 @@ async def resolveEventsForParticipant(session, id, startdate=None, enddate=None)
             
 resolveInsertOrganizer = createInsertResolver(EventOrganizerModel)
 resolveInsertParticipant = createInsertResolver(EventParticipantModel)
+
+async def resolveRemoveOrganizer(session, user_id):
+    """
+    It deletes a row from the EventModel table where the id matches the event_id passed in
+    
+    :param session: the session object
+    :param event_id: the id of the event to be deleted
+    :return: The result of the query.
+    """
+    stmt = delete(EventOrganizerModel).where(EventOrganizerModel.user_id==user_id)
+    resultMsg= ""
+    try:
+        response = await session.execute(stmt)
+        await session.commit()
+        if(response.rowcount == 1):
+            resultMsg = "ok"
+        else:
+            resultMsg = "fail"
+        
+    except:
+        resultMsg="error"
+  
+    return resultMsg
+
+async def resolveRemoveParticipant(session, user_id):
+    """
+    It deletes a row from the EventModel table where the id matches the event_id passed in
+    
+    :param session: the session object
+    :param event_id: the id of the event to be deleted
+    :return: The result of the query.
+    """
+    stmt = delete(EventParticipantModel).where(EventParticipantModel.user_id==user_id)
+    resultMsg= ""
+    try:
+        response = await session.execute(stmt)
+        await session.commit()
+        if(response.rowcount == 1):
+            resultMsg = "ok"
+        else:
+            resultMsg = "fail"
+        
+    except:
+        resultMsg="error"
+  
+    return resultMsg

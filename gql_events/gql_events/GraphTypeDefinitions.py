@@ -393,7 +393,7 @@ class GroupGQLModel:
 #                                       
 ###################################################################################################################
 
-from gql_events.GraphResolvers import resolveUpdateEvent, resolveRemoveEvent
+from gql_events.GraphResolvers import resolveUpdateEvent, resolveRemoveEvent, resolveRemoveParticipant
 @strawberryA.input(description="""Entity representing a project update""")
 # > This class is used to update an event
 class EventUpdateGQLModel:
@@ -416,8 +416,9 @@ class EventInsertGQLModel:
     capacity: Optional[int] = None
     comment: Optional[str] = None
     eventtype_id:  Optional[uuid.UUID] = None
+    facility_id: Optional[uuid.UUID] = None
 
-from gql_events.GraphResolvers import resolveUpdateEvent, resolveInsertEvent, resolveInsertOrganizer, resolveInsertParticipant
+from gql_events.GraphResolvers import resolveUpdateEvent, resolveInsertEvent, resolveInsertOrganizer, resolveInsertParticipant, resolveRemoveOrganizer
 @strawberryA.federation.type(keys=["id"], description="""Entity representing an editable event""")
 # The class is a wrapper around the event model. It provides a set of methods to manipulate the event
 # model
@@ -569,7 +570,23 @@ class EventEditorGQLModel:
             return UserGQLModel.resolve_reference(id=user_id) 
             # proc vracim useraGQL ? 
             # vracim true nebo false - user_id = ? ... jesrlize existuje vratim false, jestlize neexistuje vracim true
-   
+    
+    @strawberryA.field(description="""Remove organizer""")
+    async def remove_organizer(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
+        """
+        It takes in a GraphQL query, and returns a string
+        
+        :param info: strawberryA.types.Info
+        :type info: strawberryA.types.Info
+        :return: The result of the mutation.
+        """
+        async with withInfo(info) as session:
+            await resolveRemoveOrganizer(session, user_id)
+            return UserGQLModel.resolve_reference(id=user_id)  
+            # result = await resolveRemoveOrganizer(session, user_id)
+            # return result
+
+
     @strawberryA.field(description="""Create new participants""")
     async def add_participant(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
         """
@@ -586,7 +603,20 @@ class EventEditorGQLModel:
             await resolveInsertParticipant(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
             return UserGQLModel.resolve_reference(id=user_id)
 
- 
+    @strawberryA.field(description="""Remove organizer""")
+    async def remove_participant(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
+        """
+        It takes in a GraphQL query, and returns a string
+        
+        :param info: strawberryA.types.Info
+        :type info: strawberryA.types.Info
+        :return: The result of the mutation.
+        """
+        async with withInfo(info) as session:
+            await resolveRemoveParticipant(session, user_id)
+            return UserGQLModel.resolve_reference(id=user_id)  
+            # result = await resolveRemoveOrganizer(session, user_id)
+            # return result
 
 ###########################################################################################################################
 #
