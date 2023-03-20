@@ -555,63 +555,30 @@ class EventEditorGQLModel:
         
     @strawberryA.field(description="""Create new organizer""")
     async def add_organizer(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
-        """
-        It takes a user_id and an event_id and inserts a new row into the organizers table with those
-        values
-        
-        :param info: strawberryA.types.Info
-        :type info: strawberryA.types.Info
-        :param user_id: uuid.UUID
-        :type user_id: uuid.UUID
-        :return: The result of the resolveInsertOrganizer function.
-        """
+ 
         async with withInfo(info) as session:
             await resolveInsertOrganizer(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
-            return UserGQLModel.resolve_reference(id=user_id) 
-            # proc vracim useraGQL ? 
-            # vracim true nebo false - user_id = ? ... jesrlize existuje vratim false, jestlize neexistuje vracim true
+            return UserGQLModel.resolve_reference(id=user_id)
     
     @strawberryA.field(description="""Remove organizer""")
     async def remove_organizer(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
-        """
-        It takes in a GraphQL query, and returns a string
-        
-        :param info: strawberryA.types.Info
-        :type info: strawberryA.types.Info
-        :return: The result of the mutation.
-        """
+
         async with withInfo(info) as session:
             await resolveRemoveOrganizer(session, user_id)
             return UserGQLModel.resolve_reference(id=user_id)  
             # result = await resolveRemoveOrganizer(session, user_id)
             # return result
 
-
-    @strawberryA.field(description="""Create new participants""")
+    @strawberryA.field(description="""Create new participant""")
     async def add_participant(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
-        """
-        It takes a user_id and an event_id and inserts a new row into the participantss table with those
-        values
-        
-        :param info: strawberryA.types.Info
-        :type info: strawberryA.types.Info
-        :param user_id: uuid.UUID
-        :type user_id: uuid.UUID
-        :return: The result of the resolveInsertParticipant function.
-        """
+
         async with withInfo(info) as session:
             await resolveInsertParticipant(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
             return UserGQLModel.resolve_reference(id=user_id)
 
-    @strawberryA.field(description="""Remove organizer""")
+    @strawberryA.field(description="""Remove participant""")
     async def remove_participant(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
-        """
-        It takes in a GraphQL query, and returns a string
-        
-        :param info: strawberryA.types.Info
-        :type info: strawberryA.types.Info
-        :return: The result of the mutation.
-        """
+
         async with withInfo(info) as session:
             await resolveRemoveParticipant(session, user_id)
             return UserGQLModel.resolve_reference(id=user_id)  
