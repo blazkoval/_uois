@@ -235,7 +235,8 @@ facility v gql nefunguje
 - spatne definovany v EventGQLModel ?
 -> opraveno v EventGQL, smazano id z FacilityGQL
 
-jdeme na add_organizer:
+add_organizer, add_participants:
 - po upravach po konzultaci, vše funguje jak má, do pg adminu se změny propíší, ale z nějakého důvodu to háže error v graphiql
+-> opraveno: problem v UserGQLModel: resolve_reference
+    - chyba odstraněna metodou pokus omyl, už ani nevím jak, přidávala jsem tam parametr info, pak zase odstraňovala až to začalo fungovat
 
-add_participants

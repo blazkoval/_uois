@@ -311,6 +311,7 @@ class UserGQLModel:
         :type id: strawberryA.ID
         :return: A UserGQLModel object
         """
+        print("Jsem tu")
         return UserGQLModel(id=id)
 
     @strawberryA.field(description="""Events O""")
@@ -565,7 +566,7 @@ class EventEditorGQLModel:
         """
         async with withInfo(info) as session:
             await resolveInsertOrganizer(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
-            return UserGQLModel.resolve_reference(info, id=user_id) 
+            return UserGQLModel.resolve_reference(id=user_id) 
             # proc vracim useraGQL ? 
             # vracim true nebo false - user_id = ? ... jesrlize existuje vratim false, jestlize neexistuje vracim true
    
@@ -583,7 +584,7 @@ class EventEditorGQLModel:
         """
         async with withInfo(info) as session:
             await resolveInsertParticipant(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
-            return UserGQLModel.resolve_reference(info, id=user_id)
+            return UserGQLModel.resolve_reference(id=user_id)
 
  
 
