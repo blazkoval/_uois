@@ -5,11 +5,26 @@ from gql_ug.DBDefinitions import BaseModel, UserModel, GroupModel, MembershipMod
 from gql_ug.DBDefinitions import GroupTypeModel, RoleTypeModel
 
 def AsyncSessionFromInfo(info):
+    """
+    It takes the context of the request and returns the session object.
+    
+    :param info: This is the GraphQLResolveInfo object that contains the information about the query
+    :return: The session object
+    """
     return info.context['session']
 
 def UserFromInfo(info):
+    """
+    It returns the user object from the context of the request
+    
+    :param info: This is the GraphQLResolveInfo object that contains information about the current
+    request
+    :return: The user object
+    """
     return info.context['user']
 
+# `BasePermission` is a class that inherits from `strawberry.permission.BasePermission` and overrides
+# the `has_permission` method
 class BasePermission(strawberry.permission.BasePermission):
     message = "User is not authenticated"
     
@@ -19,6 +34,8 @@ class BasePermission(strawberry.permission.BasePermission):
         print('BasePermission', kwargs)
         return True
 
+# > The `GroupEditorPermission` class is a subclass of `BasePermission` and it's `has_permission`
+# method returns `True` if the user is authenticated and has the `GroupEditor` role in the group
 class GroupEditorPermission(BasePermission):
     message = "User is not authenticated"
     
@@ -39,6 +56,8 @@ class GroupEditorPermission(BasePermission):
         print('GroupEditorPermission')
         return True
 
+# `UserEditorPermission` is a class that inherits from `BasePermission` and overrides the
+# `has_permission` method
 class UserEditorPermission(BasePermission):
     message = "User is not authenticated"
     
@@ -48,6 +67,8 @@ class UserEditorPermission(BasePermission):
         print('UserEditorPermission', kwargs)
         return True
 
+# `UserGDPRPermission` is a class that inherits from `BasePermission` and overrides the
+# `has_permission` method
 class UserGDPRPermission(BasePermission):
     message = "User is not authenticated"
     
