@@ -555,14 +555,31 @@ class EventEditorGQLModel:
         
     @strawberryA.field(description="""Create new organizer""")
     async def add_organizer(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
- 
+        """
+        It takes a user_id and an event_id, and inserts a row into the organizers table with those
+        values
+        
+        :param info: strawberryA.types.Info
+        :type info: strawberryA.types.Info
+        :param user_id: uuid.UUID
+        :type user_id: uuid.UUID
+        :return: The return value is a UserGQLModel object.
+        """
         async with withInfo(info) as session:
             await resolveInsertOrganizer(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
             return UserGQLModel.resolve_reference(id=user_id)
     
     @strawberryA.field(description="""Remove organizer""")
     async def remove_organizer(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
-
+        """
+        It removes the organizer from the database and returns the user object
+        
+        :param info: strawberryA.types.Info
+        :type info: strawberryA.types.Info
+        :param user_id: uuid.UUID
+        :type user_id: uuid.UUID
+        :return: The return value is a UserGQLModel object.
+        """
         async with withInfo(info) as session:
             await resolveRemoveOrganizer(session, user_id)
             return UserGQLModel.resolve_reference(id=user_id)  
@@ -571,14 +588,30 @@ class EventEditorGQLModel:
 
     @strawberryA.field(description="""Create new participant""")
     async def add_participant(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
-
+        """
+        It takes a user_id and an event_id, and inserts a row into the database with those values
+        
+        :param info: strawberryA.types.Info
+        :type info: strawberryA.types.Info
+        :param user_id: uuid.UUID
+        :type user_id: uuid.UUID
+        :return: The return type is a UserGQLModel.
+        """
         async with withInfo(info) as session:
             await resolveInsertParticipant(session, None, extraAttributes={'user_id': user_id, 'event_id': self.id})
             return UserGQLModel.resolve_reference(id=user_id)
 
     @strawberryA.field(description="""Remove participant""")
     async def remove_participant(self, info: strawberryA.types.Info, user_id: uuid.UUID) -> 'UserGQLModel':
-
+        """
+        It removes a participant from an event, and returns the user that was removed
+        
+        :param info: strawberryA.types.Info
+        :type info: strawberryA.types.Info
+        :param user_id: uuid.UUID
+        :type user_id: uuid.UUID
+        :return: The return value is a UserGQLModel object.
+        """
         async with withInfo(info) as session:
             await resolveRemoveParticipant(session, user_id)
             return UserGQLModel.resolve_reference(id=user_id)  
