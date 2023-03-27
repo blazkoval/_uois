@@ -25,11 +25,11 @@ Prezentovali jsme naše schéma a dosud vytvořené modely v DBDefinition. Ujasn
 ## 25. 10. 
 Modely jsme programovali v prostředí jupyteru v experimental.ipynb, abychom nemuseli pokaždé celý náš projekt spouštět přes docker-compose. Vyrázně se se urychlí celá činnost při úpravách a kontrole chyb v naší databázi. V experimental.ipynb máme stručný postup, jak vytvářet databáze v SQLAlchemy.
 
-## 29. 11. 2022 - projetový den (verze alfa)
-Prezentovali jsme naši databázi v pgAdminu, kterou jsme vytvářeli v pgAdminu
+## 29. 11. 2022 - projektový den (verze alfa)
+Prezentovali jsme naši databázi v pgAdminu, kterou jsme vytvářeli v DBDefinition.
 
 ## 29. 11. 2022 
-Začali jsme vytvářet GQL modely a resolvery v GraphTypeDefinition a GraphResolvers, Zatím jen pro EventModel. Zde jsme pracovali přímo v souborech gql_event v prostředí VS code, protože v prostředí jupyteru nám nešlo spustit http://localhost:31102/gql/, kde jsme chtěli ověřovat funkčnost GQL modelů.
+Začali jsme vytvářet GQL modely a resolvery v GraphTypeDefinition a GraphResolvers, zatím jen pro EventModel. Zde jsme pracovali přímo v souborech gql_event v prostředí VS code, protože v prostředí jupyteru nám nešlo spustit http://localhost:31102/gql/, kde jsme chtěli ověřovat funkčnost GQL modelů.
 ## 11. 01. 2023 - projektový den (verze beta)
 Prezentovali jsme první GQL modely a řešlili jsme nefunkčnost GraphiQL spuštěného z jupyteru.
 
@@ -60,4 +60,7 @@ Přidali jsme metody pro přiřazení organizer a participant k eventu (add_orga
 ## 20. 03.
 Opravili jsme veškeré chyby, tak aby bylo možné všechny metody realizovat v GraphiQL.
 
-## ??.03. - prezentace finálního projektu
+## 27. 03. - prezentace finální verze
+
+## Docker Image
+https://hub.docker.com/layers/megalekk/gql_events/latest/images/sha256-ae1d4987d78a82caf2fee500119632bf196e9dac17acc939224d5df5d2e9efed?context=explore&fbclid=IwAR2O0bD2V4zLGzyFojLLYJMpISu-bUbFsasqYhYzqit99Y_VrAT27AFV5sM
