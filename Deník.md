@@ -43,7 +43,8 @@ schema_vBeta.pdf
 
 ## 19. 01.
 Přidali jsme frontend kontejner. Po konzultaci jsme vypustili i LessonModel, protože odpovědnost a tedy rozšíření pro EventModel spadá pod projekt č. 7.</br>
-Do pgAdminu jsme vložili základní demo data a ověřili jsme funkčnost GQL modelů v prostředí GraphiQL (http://localhost:31128/gql/).
+Do pgAdminu jsme vložili základní demo data a ověřili jsme funkčnost GQL modelů v prostředí GraphiQL (http://localhost:31128/gql/).<br>
+schema_final.pdf
 
 ## 22. 01. - 21. 02.
 Úpravy v DBFeederu. Demo data se zapsali do naší databáze a zobrazují se v pgAdminu.
